@@ -1,5 +1,7 @@
 import 'package:doomsday/Map.dart';
+import 'package:doomsday/Ocean.dart';
 import 'package:flutter/material.dart';
+import 'package:doomsday/GlobalWarming.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 
 void main() => runApp(MyApp());
@@ -36,11 +38,11 @@ class _MyHomePageState extends State<MyHomePage> {
             iconData: Icons.map,
             title: "Companies",
           ),
+          TabData(iconData: Icons.wb_sunny, title: "Climate"),
           TabData(
             iconData: Icons.directions_boat,
             title: "Ocean",
           ),
-          TabData(iconData: Icons.wb_sunny, title: "Climate"),
           TabData(iconData: Icons.person, title: "Animals"),
         ],
         onTabChangedListener: (position) {
@@ -49,22 +51,15 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
       ),
-      body: Center(
-        child: _getPage(currentPage),
+      body: IndexedStack(
+        index: currentPage,
+        children: <Widget>[Map(), GlobalWarming(), Ocean(), Text("Page4")],
       ),
     );
   }
 
-  _getPage(int page) {
-    switch (page) {
-      case 0:
-        return Map();
-      case 1:
-        return Text("Page2");
-      case 2:
-        return Text("Page3");
-      default:
-        return Text("Page4");
-    }
-  }
+// Center(
+//         child: _getPage(currentPage),
+//       )
+
 }
