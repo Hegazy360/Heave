@@ -47,7 +47,7 @@ class _OceanState extends State<Ocean> {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () =>
-                      _handleURLButtonPress(context, list[index]['url']),
+                      _handleURLButtonPress(context, list[index]['url'],list[index]['title']),
                   child: Card(
                       child: ListTile(
                     contentPadding: EdgeInsets.all(20.0),
@@ -77,8 +77,8 @@ class _OceanState extends State<Ocean> {
     );
   }
 
-  void _handleURLButtonPress(BuildContext context, String url) {
+  void _handleURLButtonPress(BuildContext context, String url, String title) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => WebViewContainer(url)));
+        MaterialPageRoute(builder: (context) => WebViewContainer(url, title)));
   }
 }

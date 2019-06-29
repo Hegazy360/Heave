@@ -25,7 +25,7 @@ class _GlobalWarmingState extends State<GlobalWarming> {
         isLoading = false;
       });
     } else {
-      throw Exception('Failed to load photos');
+      throw Exception('Failed to load news');
     }
   }
 
@@ -47,7 +47,7 @@ class _GlobalWarmingState extends State<GlobalWarming> {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () =>
-                      _handleURLButtonPress(context, list[index]['url']),
+                      _handleURLButtonPress(context, list[index]['url'], list[index]['title']),
                   child: Card(
                       child: ListTile(
                     contentPadding: EdgeInsets.all(20.0),
@@ -65,8 +65,8 @@ class _GlobalWarmingState extends State<GlobalWarming> {
     );
   }
 
-  void _handleURLButtonPress(BuildContext context, String url) {
+  void _handleURLButtonPress(BuildContext context, String url, String title) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => WebViewContainer(url)));
+        MaterialPageRoute(builder: (context) => WebViewContainer(url, title)));
   }
 }

@@ -1,30 +1,77 @@
-import 'dart:async';
+// import 'dart:async';
+// import 'package:flutter/material.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// // import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:flutter_map/flutter_map.dart';
+// import 'package:latlong/latlong.dart';
+
+// class Map extends StatefulWidget {
+//   @override
+//   _MapState createState() => _MapState();
+// }
+
+// typedef Marker MarkerUpdateAction(Marker marker);
+
+// class _MapState extends State<Map> {
+//   int _markerIdCounter = 1;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _getMarkers();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Stack(
+//       children: <Widget>[
+//         Container(
+//           child: FlutterMap(
+//               options: MapOptions(
+//             center: LatLng(51.5, -0.09),
+//             zoom: 13.0,
+//           )),
+//         ),
+//         Positioned(
+//           bottom: 20,
+//           right: 20,
+//           child: FloatingActionButton(
+//             backgroundColor: Colors.white,
+//             onPressed: () {},
+//             child: Icon(
+//               Icons.add,
+//               color: Colors.black,
+//             ),
+//           ),
+//         )
+//       ],
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Map extends StatefulWidget {
+  static const String route = 'map_controller_animated';
+
   @override
-  _MapState createState() => _MapState();
+  MapState createState() {
+    return MapState();
+  }
 }
 
-typedef Marker MarkerUpdateAction(Marker marker);
-
-class _MapState extends State<Map> {
-  Completer<GoogleMapController> _controller = Completer();
-  var markers = <MarkerId, Marker>{};
-  MarkerId selectedMarker;
-  int _markerIdCounter = 1;
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
+class MapState extends State<Map> with TickerProviderStateMixin {
+  MapController mapController;
+  List tappedPoints = [];
   @override
   void initState() {
     super.initState();
     _getMarkers();
+    mapController = MapController();
   }
 
   _getMarkers() async {
@@ -36,49 +83,99 @@ class _MapState extends State<Map> {
       company.data['branches'].forEach((geoPoint) {
         print(geoPoint.latitude);
         print(geoPoint.longitude);
-        final String markerIdVal = 'marker_id_$_markerIdCounter';
-        _markerIdCounter++;
-        final MarkerId markerId = MarkerId(markerIdVal);
 
-        final Marker marker = Marker(
-          markerId: markerId,
-          position: LatLng(
-            geoPoint.latitude,
-            geoPoint.longitude,
-          ),
-          infoWindow: InfoWindow(title: company.data['name'], snippet: '*'),
-          onTap: () {
-            print("marker clicked");
-          },
-        );
-
+        // final MarkerId markerId = MarkerId(markerIdVal);
+        // final Marker marker = Marker(
+        //   markerId: markerId,
+        //   position: LatLng(
+        //     geoPoint.latitude,
+        //     geoPoint.longitude,
+        //   ),
+        //   infoWindow: InfoWindow(title: company.data['name'], snippet: '*'),
+        //   onTap: () {},
+        // icon: BitmapDescriptor.fromBytes(),
+        // );
+        print(geoPoint.latitude);
         setState(() {
-          markers[markerId] = marker;
+          tappedPoints.add({
+            'data': company.data,
+            'location': LatLng(
+              geoPoint.latitude,
+              geoPoint.longitude,
+            ),
+          });
         });
       });
-      print('HERE');
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: GoogleMap(
-      mapType: MapType.hybrid,
-      initialCameraPosition: _kGooglePlex,
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-      },
-      markers: Set<Marker>.of(markers.values)
-    ));
-  }
+    var markers = tappedPoints.map((company) {
+      return Marker(
+          width: 60.0,
+          height: 60.0,
+          point: company['location'],
+          builder: (ctx) => ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(5),
+                    child: Image.network(
+                      company['data']['logo_url'] ?? '',
+                      fit: BoxFit.cover,
+                    )),
+              )
 
-  Set<Marker> _createMarker() {
-    return <Marker>[
-      Marker(
-        markerId: MarkerId("marker_1"),
-        position: LatLng(37.42796133580664, -122.085749655962),
-      ),
-    ].toSet();
+          // Container(
+          //     decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         image: DecorationImage(
+          //             fit: BoxFit.cover,
+          //             image: NetworkImage(company['data']['logo_url'] ?? '')))),
+          );
+    }).toList();
+    return FlutterMap(
+      mapController: mapController,
+      options: MapOptions(
+          center: LatLng(51.5, -0.09),
+          zoom: 5.0,
+          maxZoom: 10.0,
+          minZoom: 3.0,
+          plugins: [
+            MarkerClusterPlugin(),
+          ]),
+      layers: [
+        TileLayerOptions(
+          urlTemplate: "https://api.mapbox.com/v4/"
+              "{id}/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoiaGVnYXp5MzYwIiwiYSI6ImNqeGd0bWxldTA4a2gzb25ydzVycHU5cXUifQ.yB81RAqwBYSAXnLlImaCHg",
+          additionalOptions: {
+            'accessToken':
+                'pk.eyJ1IjoiaGVnYXp5MzYwIiwiYSI6ImNqeGd0bWxldTA4a2gzb25ydzVycHU5cXUifQ.yB81RAqwBYSAXnLlImaCHg',
+            'id': 'mapbox.streets',
+          },
+        ),
+        MarkerClusterLayerOptions(
+          maxClusterRadius: 50,
+          height: 40,
+          width: 40,
+          anchorPos: AnchorPos.align(AnchorAlign.center),
+          fitBoundsOptions: FitBoundsOptions(
+            padding: EdgeInsets.all(50),
+          ),
+          markers: markers,
+          polygonOptions: PolygonOptions(
+              borderColor: Colors.blueAccent,
+              color: Colors.black12,
+              borderStrokeWidth: 3),
+          builder: (context, markers) {
+            return FloatingActionButton(
+              child: Text(markers.length.toString()),
+              onPressed: null,
+            );
+          },
+        ),
+      ],
+    );
   }
 }

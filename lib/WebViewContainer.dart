@@ -3,26 +3,35 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewContainer extends StatefulWidget {
   final url;
-  WebViewContainer(this.url);
+  final title;
+  WebViewContainer(this.url, this.title);
   @override
-  createState() => _WebViewContainerState(this.url);
+  _WebViewContainerState createState() => _WebViewContainerState();
 }
 
 class _WebViewContainerState extends State<WebViewContainer> {
-  var _url;
   final _key = UniqueKey();
-  _WebViewContainerState(this._url);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text(
+            widget.title,
+            style: TextStyle(color: Colors.black, fontSize: 12),
+          ),
+          leading: BackButton(
+            color: Colors.black,
+          ),
+        ),
         body: Column(
-      children: [
-        Expanded(
-            child: WebView(
-                key: _key,
-                javascriptMode: JavascriptMode.unrestricted,
-                initialUrl: _url))
-      ],
-    ));
+          children: [
+            Expanded(
+                child: WebView(
+                    key: _key,
+                    javascriptMode: JavascriptMode.unrestricted,
+                    initialUrl: widget.url))
+          ],
+        ));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:doomsday/Map.dart';
 import 'package:doomsday/Ocean.dart';
 import 'package:flutter/material.dart';
+import 'package:doomsday/Animals.dart';
 import 'package:doomsday/GlobalWarming.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 
@@ -53,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: IndexedStack(
         index: currentPage,
-        children: <Widget>[Map(), GlobalWarming(), Ocean(), Text("Page4")],
+        children: <Widget>[Map(), GlobalWarming(), Ocean(), Animals()],
       ),
     );
   }
