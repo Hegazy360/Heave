@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:doomsday/WebViewContainer.dart';
+import 'package:intl/intl.dart';
 
 class GlobalWarming extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _GlobalWarmingState extends State<GlobalWarming> {
       isLoading = true;
     });
     final response = await http.get(
-        "https://newsapi.org/v2/everything?q=global+warming&sortBy=popularity&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
+        "https://newsapi.org/v2/everything?q=global+warming&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
     if (response.statusCode == 200) {
       list = json.decode(response.body)['articles'] as List;
       print(list);
@@ -46,19 +47,63 @@ class _GlobalWarmingState extends State<GlobalWarming> {
               itemCount: list.length,
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
-                  onTap: () =>
-                      _handleURLButtonPress(context, list[index]['url'], list[index]['title']),
+                  onTap: () => _handleURLButtonPress(
+                      context, list[index]['url'], list[index]['title']),
                   child: Card(
-                      child: ListTile(
-                    contentPadding: EdgeInsets.all(20.0),
-                    title: Text(list[index]['title']),
-                    subtitle: Text(list[index]['description']),
-                    trailing: Image.network(
-                      list[index]['urlToImage'],
-                      fit: BoxFit.cover,
-                      height: 100.0,
-                      width: 100.0,
-                    ),
+                      child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            width: MediaQuery.of(context).size.width * 2 / 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  list[index]['title'],
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 5.0),
+                                  child: Text(list[index]['description']),
+                                )
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 5.0),
+                              child: Image.network(
+                                list[index]['urlToImage'],
+                                fit: BoxFit.cover,
+                                height: 100.0,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(left: 15, bottom: 10),
+                            child: Text(
+                                DateFormat.yMMMd().format(
+                                    DateTime.parse(list[index]['publishedAt'])),
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 5, bottom: 10),
+                            child: Text(
+                              list[index]['source']['name'],
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
                   )),
                 );
               }),
