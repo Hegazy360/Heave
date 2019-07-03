@@ -230,12 +230,14 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                       onPressed: () {
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) {
-                                            return CompanyPage(
-                                              company: activeCompany,
-                                            );
-                                          }),
+                                          PageRouteBuilder(
+                                              transitionDuration:
+                                                  Duration(milliseconds: 500 ),
+                                              pageBuilder: (_, __, ___) {
+                                                return CompanyPage(
+                                                  company: activeCompany,
+                                                );
+                                              }),
                                         );
                                       },
                                       child: Icon(
