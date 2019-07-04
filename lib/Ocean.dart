@@ -18,7 +18,7 @@ class _OceanState extends State<Ocean> {
       isLoading = true;
     });
     final response = await http.get(
-        "https://newsapi.org/v2/everything?q=ocean+waste&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
+        "https://newsapi.org/v2/everything?q=ocean+pollution+plastic&sortBy=publishedAt&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
     if (response.statusCode == 200) {
       list = json.decode(response.body)['articles'] as List;
       print(list);
@@ -75,7 +75,7 @@ class _OceanState extends State<Ocean> {
                             child: Padding(
                               padding: EdgeInsets.only(right: 5.0),
                               child: Image.network(
-                                list[index]['urlToImage'],
+                                list[index]['urlToImage']?? '',
                                 fit: BoxFit.cover,
                                 height: 100.0,
                               ),

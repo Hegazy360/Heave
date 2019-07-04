@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
@@ -6,6 +8,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'CompanyPage.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Map extends StatefulWidget {
   static const String route = 'map_controller_animated';
@@ -17,11 +21,66 @@ class Map extends StatefulWidget {
 }
 
 class MapState extends State<Map> with TickerProviderStateMixin {
+  static final FacebookLogin facebookSignIn = new FacebookLogin();
+  final FirebaseAuth _fAuth = FirebaseAuth.instance;
   MapController mapController;
   List tappedPoints = [];
   AnimationController controller;
   Animation<Offset> offset;
   var activeCompany;
+
+  Future<FirebaseUser> _signIn(BuildContext context) async {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text('Sign in button clicked'),
+    ));
+
+    var result = await facebookSignIn
+        .logInWithReadPermissions(['email', 'public_profile']);
+
+    if (result.status == FacebookLoginStatus.loggedIn) {
+      FacebookAccessToken myToken = result.accessToken;
+      AuthCredential credential =
+          FacebookAuthProvider.getCredential(accessToken: myToken.token);
+
+      var user = await FirebaseAuth.instance.signInWithCredential(credential);
+      print(user);
+      ProviderDetails userInfo = new ProviderDetails(user.providerId, user.uid,
+          user.displayName, user.photoUrl, user.email);
+
+      List<ProviderDetails> providerData = new List<ProviderDetails>();
+      providerData.add(userInfo);
+
+      UserInfoDetails userInfoDetails = new UserInfoDetails(
+          user.providerId,
+          user.uid,
+          user.displayName,
+          user.photoUrl,
+          user.email,
+          user.isAnonymous,
+          user.isEmailVerified,
+          providerData);
+
+      Navigator.push(
+        context,
+        new MaterialPageRoute(
+          builder: (context) => Text("logged in"),
+        ),
+      );
+
+      return user;
+    }
+    else {
+      print(result.errorMessage);
+    }
+  }
+
+  Future<Null> _signOut(BuildContext context) async {
+    await facebookSignIn.logOut();
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      content: new Text('Sign out button clicked'),
+    ));
+    print('Signed out');
+  }
 
   @override
   void initState() {
@@ -287,7 +346,9 @@ class MapState extends State<Map> with TickerProviderStateMixin {
             child: FloatingActionButton(
               heroTag: "add",
               backgroundColor: Colors.white,
-              onPressed: () {},
+              onPressed: () => _signIn(context)
+                  .then((FirebaseUser user) => print(user))
+                  .catchError((e) => print(e)),
               child: Icon(
                 Icons.add,
                 color: Colors.blueGrey,
@@ -296,4 +357,48 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       ],
     );
   }
+}
+
+class UserInfoDetails {
+  UserInfoDetails(this.providerId, this.uid, this.displayName, this.photoUrl,
+      this.email, this.isAnonymous, this.isEmailVerified, this.providerData);
+
+  /// The provider identifier.
+  final String providerId;
+
+  /// The provider’s user ID for the user.
+  final String uid;
+
+  /// The name of the user.
+  final String displayName;
+
+  /// The URL of the user’s profile photo.
+  final String photoUrl;
+
+  /// The user’s email address.
+  final String email;
+
+  // Check anonymous
+  final bool isAnonymous;
+
+  //Check if email is verified
+  final bool isEmailVerified;
+
+  //Provider Data
+  final List<ProviderDetails> providerData;
+}
+
+class ProviderDetails {
+  final String providerId;
+
+  final String uid;
+
+  final String displayName;
+
+  final String photoUrl;
+
+  final String email;
+
+  ProviderDetails(
+      this.providerId, this.uid, this.displayName, this.photoUrl, this.email);
 }
