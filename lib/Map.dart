@@ -3,7 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:transparent_image/transparent_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'CompanyPage.dart';
 
 class Map extends StatefulWidget {
@@ -78,15 +79,25 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                   }
                 },
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(5),
-                      child: Image.network(
-                        company['data']['logo_url'] ?? '',
-                        fit: BoxFit.cover,
-                      )),
-                ),
+                    borderRadius: BorderRadius.circular(50),
+                    child: Container(
+                        color: Colors.white,
+                        padding: EdgeInsets.all(5),
+                        child: Stack(
+                          children: <Widget>[
+                            Center(
+                              child: SpinKitPulse(
+                                color: Colors.blueGrey,
+                                size: 25.0,
+                              ),
+                            ),
+                            FadeInImage.memoryNetwork(
+                              placeholder: kTransparentImage,
+                              image: company['data']['logo_url'] ?? '',
+                              fit: BoxFit.cover,
+                            )
+                          ],
+                        ))),
               ));
     }).toList();
 
@@ -181,7 +192,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                         activeCompany['data']['name'],
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            color: Colors.black,
+                                            color: Colors.blueGrey,
                                             fontSize: 17,
                                             fontWeight: FontWeight.w500),
                                       ),
@@ -191,18 +202,35 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Hero(
-                                          tag: 'company_image',
-                                          child: Image.network(
-                                            activeCompany['data']['logo_url'] ??
-                                                '',
-                                            fit: BoxFit.cover,
-                                            height: 100,
-                                            width: 100,
-                                          ),
-                                        ),
+                                      Hero(
+                                        tag: 'company_image',
+                                        child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            child: Container(
+                                                color: Colors.white,
+                                                padding: EdgeInsets.all(5),
+                                                child:
+                                                    FadeInImage.memoryNetwork(
+                                                  placeholder:
+                                                      kTransparentImage,
+                                                  image: activeCompany['data']
+                                                          ['logo_url'] ??
+                                                      '',
+                                                  fit: BoxFit.cover,
+                                                  height: 100,
+                                                  width: 100,
+                                                )
+
+                                                // Image.network(
+                                                //   activeCompany['data']
+                                                //           ['logo_url'] ??
+                                                //       '',
+                                                //   fit: BoxFit.cover,
+                                                //   height: 100,
+                                                //   width: 100,
+                                                // ),
+                                                )),
                                       ),
                                       Expanded(
                                         child: Padding(
@@ -230,14 +258,11 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                       onPressed: () {
                                         Navigator.push(
                                           context,
-                                          PageRouteBuilder(
-                                              transitionDuration:
-                                                  Duration(milliseconds: 500 ),
-                                              pageBuilder: (_, __, ___) {
-                                                return CompanyPage(
-                                                  company: activeCompany,
-                                                );
-                                              }),
+                                          MaterialPageRoute(builder: (_) {
+                                            return CompanyPage(
+                                              company: activeCompany,
+                                            );
+                                          }),
                                         );
                                       },
                                       child: Icon(
@@ -257,19 +282,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
               )
             : Container(),
         Positioned(
-            bottom: 20,
-            right: 20,
-            child: FloatingActionButton(
-              heroTag: "info",
-              backgroundColor: Colors.white,
-              onPressed: () {},
-              child: Icon(
-                Icons.remove_red_eye,
-                color: Colors.blueGrey,
-              ),
-            )),
-        Positioned(
-            bottom: 80,
+            bottom: 30,
             right: 20,
             child: FloatingActionButton(
               heroTag: "add",

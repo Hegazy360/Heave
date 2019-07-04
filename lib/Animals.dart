@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Animals extends StatefulWidget {
   @override
@@ -78,7 +80,8 @@ class _AnimalsState extends State<Animals> {
                                               'Stable',
                                           style: TextStyle(
                                               color: colors[animalsList[index]
-                                                  ['level']], fontWeight: FontWeight.bold)),
+                                                  ['level']],
+                                              fontWeight: FontWeight.bold)),
                                     )
                                   ],
                                 ),
@@ -86,8 +89,9 @@ class _AnimalsState extends State<Animals> {
                               Expanded(
                                 child: Padding(
                                   padding: EdgeInsets.only(right: 5.0),
-                                  child: Image.network(
-                                    animalsList[index]['image'] ?? '',
+                                  child: FadeInImage.memoryNetwork(
+                                    placeholder: kTransparentImage,
+                                    image: animalsList[index]['image'] ?? '',
                                     fit: BoxFit.cover,
                                     height: 120,
                                   ),
