@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'CompanyPage.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class Map extends StatefulWidget {
   static const String route = 'map_controller_animated';
@@ -28,6 +28,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
   AnimationController controller;
   Animation<Offset> offset;
   var activeCompany;
+  FirebaseUser user;
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
     Scaffold.of(context).showSnackBar(new SnackBar(
@@ -42,7 +43,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       AuthCredential credential =
           FacebookAuthProvider.getCredential(accessToken: myToken.token);
 
-      var user = await FirebaseAuth.instance.signInWithCredential(credential);
+      user = await FirebaseAuth.instance.signInWithCredential(credential);
       print(user);
       ProviderDetails userInfo = new ProviderDetails(user.providerId, user.uid,
           user.displayName, user.photoUrl, user.email);
@@ -60,25 +61,18 @@ class MapState extends State<Map> with TickerProviderStateMixin {
           user.isEmailVerified,
           providerData);
 
-      Navigator.push(
-        context,
-        new MaterialPageRoute(
-          builder: (context) => Text("logged in"),
-        ),
-      );
-
       return user;
-    }
-    else {
+    } else {
       print(result.errorMessage);
     }
   }
 
   Future<Null> _signOut(BuildContext context) async {
-    await facebookSignIn.logOut();
-    Scaffold.of(context).showSnackBar(new SnackBar(
-      content: new Text('Sign out button clicked'),
-    ));
+    facebookSignIn.logOut();
+    _fAuth.signOut();
+    this.setState(() {
+      user = null;
+    });
     print('Signed out');
   }
 
@@ -346,16 +340,113 @@ class MapState extends State<Map> with TickerProviderStateMixin {
             child: FloatingActionButton(
               heroTag: "add",
               backgroundColor: Colors.white,
-              onPressed: () => _signIn(context)
-                  .then((FirebaseUser user) => print(user))
-                  .catchError((e) => print(e)),
+              onPressed: () async {
+                FirebaseUser user = await _fAuth.currentUser();
+                if (user == null) {
+                  loginAlert(context).show();
+                } else {
+                  companyFormAlert(context).show();
+                }
+                // _signIn(context)
+                //       .then((FirebaseUser user) => print(user));
+              },
               child: Icon(
                 Icons.add,
                 color: Colors.blueGrey,
               ),
             )),
+        Positioned(
+            bottom: 100,
+            right: 20,
+            child: FloatingActionButton(
+              heroTag: "disconnect",
+              backgroundColor: Colors.redAccent,
+              onPressed: () {
+                _signOut(context);
+              },
+              child: Icon(
+                Icons.close,
+                color: Colors.blueGrey,
+              ),
+            )),
       ],
     );
+  }
+
+  Alert loginAlert(BuildContext context) {
+    return Alert(
+        context: context,
+        title: "LOGIN",
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            TextField(
+              decoration: InputDecoration(
+                icon: Icon(Icons.account_circle),
+                labelText: 'Username',
+              ),
+            ),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                icon: Icon(Icons.lock),
+                labelText: 'Password',
+              ),
+            ),
+            Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: SignInButtonBuilder(
+                  text: 'Login',
+                  icon: Icons.email,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  backgroundColor: Colors.blueGrey,
+                )),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "OR",
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SignInButton(
+              Buttons.Facebook,
+              onPressed: () {
+                Navigator.pop(context);
+                _signIn(context).then((value) {
+                  companyFormAlert(context).show();
+                });
+              },
+            ),
+          ],
+        ),
+        buttons: []);
+  }
+
+  Alert companyFormAlert(BuildContext context) {
+    return Alert(
+        context: context,
+        title: "REPORT COMPANY",
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            TextField(
+              decoration: InputDecoration(
+                icon: Icon(Icons.account_circle),
+                labelText: 'Company name',
+              ),
+            ),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                icon: Icon(Icons.lock),
+                labelText: 'What do they do wrong ?',
+              ),
+            ),
+          ],
+        ),
+        buttons: []);
   }
 }
 
