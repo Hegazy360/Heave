@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Animals extends StatefulWidget {
   @override
