@@ -1,14 +1,14 @@
 {
   "project_info": {
     "project_number": "652108220554",
-    "firebase_url": "https://doomsday-244617.firebaseio.com",
-    "project_id": "doomsday-244617",
-    "storage_bucket": "doomsday-244617.appspot.com"
+    "firebase_url": "https://heave-244617.firebaseio.com",
+    "project_id": "heave-244617",
+    "storage_bucket": "heave-244617.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:652108220554:android:cfaf11d25146b893",
+        "mobilesdk_app_id": "1:652108220554:android:bc1eaecb8cfa1657",
         "android_client_info": {
           "package_name": "com.mohega.heave"
         }
