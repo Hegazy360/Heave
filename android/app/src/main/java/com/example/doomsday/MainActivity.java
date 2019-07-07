@@ -1,4 +1,4 @@
-package com.mohega.doomsday;
+package com.mohega.heave;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

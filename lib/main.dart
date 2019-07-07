@@ -1,8 +1,8 @@
-import 'package:doomsday/Map.dart';
-import 'package:doomsday/Ocean.dart';
+import 'package:heave/Map.dart';
+import 'package:heave/Ocean.dart';
 import 'package:flutter/material.dart';
-import 'package:doomsday/Animals.dart';
-import 'package:doomsday/GlobalWarming.dart';
+import 'package:heave/Animals.dart';
+import 'package:heave/GlobalWarming.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 
 void main() => runApp(MyApp());
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Doomsday',
+      title: 'heave',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),

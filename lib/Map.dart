@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doomsday/CompanyPopup.dart';
-import 'package:doomsday/MapInterface.dart';
+import 'package:heave/CompanyPopup.dart';
+import 'package:heave/MapInterface.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -11,7 +11,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
-import 'package:doomsday/UserProfile.dart';
+import 'package:heave/UserProfile.dart';
 import 'package:flushbar/flushbar.dart';
 
 class Map extends StatefulWidget {
