@@ -61,69 +61,86 @@ class _CompanyPageState extends State<CompanyPage> {
                             fit: BoxFit.cover,
                             height: 130,
                             width: 130,
-                          )
-                          ),
+                          )),
                     ))
               ],
             ),
           ),
-          widget.company['data']['sources'][0]['type'] == 'video'
-              ? Column(
-                  children: <Widget>[
-                    Text(widget.company['data']['sources'][0]['title'],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 10.0),
-                      child: Text(
-                          widget.company['data']['sources'][0]['publisher']),
-                    ),
-                    YoutubePlayer(
-                      context: context,
-                      source: widget.company['data']['sources'][0]['value'],
-                      quality: YoutubeQuality.HD,
-                      autoPlay: false,
-                    )
-                  ],
-                )
-              : Padding(
-                  padding:
-                      EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
-                  child: Column(
-                    children: <Widget>[
-                      Text(widget.company['data']['sources'][0]['title'],
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                            widget.company['data']['sources'][0]['publisher']),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: FlatButton.icon(
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(30.0)),
-                            color: Colors.black.withOpacity(0.1),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => WebViewContainer(
-                                          widget.company['data']['sources'][0]
-                                              ['value'],
-                                          widget.company['data']['sources'][0]
-                                              ['title'])));
-                            },
-                            icon: Icon(
-                              Icons.remove_red_eye,
-                              color: Colors.blueGrey,
-                            ),
-                            label: Text('View Article')),
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.company['data']['sources'].length,
+              itemBuilder: (_, index) {
+                return widget.company['data']['sources'][index]['type'] ==
+                        'video'
+                    ? Column(
+                        children: <Widget>[
+                          Text(
+                              widget.company['data']['sources'][index]['title'],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16)),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 8.0, bottom: 10.0),
+                            child: Text(widget.company['data']['sources'][index]
+                                ['publisher']),
+                          ),
+                          YoutubePlayer(
+                            context: context,
+                            source: widget.company['data']['sources'][index]
+                                ['value'],
+                            quality: YoutubeQuality.HD,
+                            autoPlay: false,
+                          )
+                        ],
                       )
-                    ],
-                  ))
+                    : Padding(
+                        padding: EdgeInsets.only(
+                            top: 20, bottom: 10, left: 10, right: 10),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                                widget.company['data']['sources'][index]
+                                    ['title'],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(widget.company['data']['sources']
+                                  [index]['publisher']),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: FlatButton.icon(
+                                  shape: new RoundedRectangleBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(30.0)),
+                                  color: Colors.black.withOpacity(0.1),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder:
+                                                (context) =>
+                                                    WebViewContainer(
+                                                        widget.company['data']
+                                                                ['sources']
+                                                            [index]['value'],
+                                                        widget.company['data']
+                                                                ['sources']
+                                                            [index]['title'])));
+                                  },
+                                  icon: Icon(
+                                    Icons.remove_red_eye,
+                                    color: Colors.blueGrey,
+                                  ),
+                                  label: Text('View Article')),
+                            )
+                          ],
+                        ));
+              },
+            ),
+          ),
         ],
       ),
     );

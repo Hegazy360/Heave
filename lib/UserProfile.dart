@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -25,14 +24,18 @@ class _UserProfileState extends State<UserProfile> {
                 borderRadius: BorderRadius.circular(100),
                 child: FadeInImage.memoryNetwork(
                   placeholder: kTransparentImage,
-                  image: widget.user != null ? widget.user.photoUrl + "?height=500" ?? '' : '',
+                  image: widget.user != null
+                      ? widget.user.photoUrl != null
+                          ? widget.user.photoUrl + "?height=500"
+                          : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg'
+                      : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg',
                   fit: BoxFit.cover,
                   width: 150,
                   height: 150,
                 )),
           ),
           Text(
-            widget.user != null ? widget.user.displayName : '',
+            widget.user != null ? widget.user.displayName?? 'Batman' : 'Batman',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             textAlign: TextAlign.center,
           ),
@@ -55,14 +58,16 @@ class _UserProfileState extends State<UserProfile> {
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.w500),
           ),
-          FlatButton.icon(
+          Padding(
             padding: EdgeInsets.only(top: 50.0),
-            icon: Icon(Icons.exit_to_app),
-            label: Text('Logout'),
-            onPressed: () {
-              widget.signOut(context);
-              widget.close();
-            },
+            child: FlatButton.icon(
+              icon: Icon(Icons.exit_to_app),
+              label: Text('Logout'),
+              onPressed: () {
+                widget.signOut(context);
+                widget.close();
+              },
+            ),
           ),
         ],
       ),

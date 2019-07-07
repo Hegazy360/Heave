@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doomsday/CompanyPopup.dart';
+import 'package:doomsday/MapInterface.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'CompanyPage.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:doomsday/UserProfile.dart';
+import 'package:flushbar/flushbar.dart';
 
 class Map extends StatefulWidget {
   static const String route = 'map_controller_animated';
@@ -35,13 +36,8 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       GlobalKey<InnerDrawerState>();
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
-    Scaffold.of(context).showSnackBar(new SnackBar(
-      content: new Text('Sign in button clicked'),
-    ));
-
     var result = await facebookSignIn
         .logInWithReadPermissions(['email', 'public_profile']);
-
     if (result.status == FacebookLoginStatus.loggedIn) {
       FacebookAccessToken myToken = result.accessToken;
       AuthCredential credential =
@@ -53,22 +49,6 @@ class MapState extends State<Map> with TickerProviderStateMixin {
           user = currentUser;
         });
       });
-      ProviderDetails userInfo = new ProviderDetails(user.providerId, user.uid,
-          user.displayName, user.photoUrl, user.email);
-
-      List<ProviderDetails> providerData = new List<ProviderDetails>();
-      providerData.add(userInfo);
-
-      // UserInfoDetails userInfoDetails = new UserInfoDetails(
-      //     user.providerId,
-      //     user.uid,
-      //     user.displayName,
-      //     user.photoUrl,
-      //     user.email,
-      //     user.isAnonymous,
-      //     user.isEmailVerified,
-      //     providerData);
-
       return user;
     } else {
       print(result.errorMessage);
@@ -94,34 +74,6 @@ class MapState extends State<Map> with TickerProviderStateMixin {
 
     offset = Tween<Offset>(begin: Offset(0.0, -1.0), end: Offset.zero)
         .animate(controller);
-  }
-
-  _getMarkers() async {
-    QuerySnapshot companiesSnapshot =
-        await Firestore.instance.collection('companies').getDocuments();
-    var companiesList = companiesSnapshot.documents;
-
-    companiesList.forEach((company) {
-      company.data['branches'].forEach((geoPoint) {
-        setState(() {
-          tappedPoints.add({
-            'data': company.data,
-            'location': LatLng(
-              geoPoint.latitude,
-              geoPoint.longitude,
-            ),
-          });
-        });
-      });
-    });
-  }
-
-  void _open() {
-    _innerDrawerKey.currentState.open();
-  }
-
-  void _close() {
-    _innerDrawerKey.currentState.close();
   }
 
   @override
@@ -185,187 +137,12 @@ class MapState extends State<Map> with TickerProviderStateMixin {
         ))),
         scaffold: Stack(
           children: <Widget>[
-            FlutterMap(
-              mapController: mapController,
-              options: MapOptions(
-                  center: LatLng(51.5, -0.09),
-                  zoom: 3.0,
-                  minZoom: 3.0,
-                  maxZoom: 10.0,
-                  onTap: (position) {
-                    switch (controller.status) {
-                      case AnimationStatus.completed:
-                        controller.reverse();
-                        break;
-                      // case AnimationStatus.dismissed:
-                      //   controller.forward();
-                      //   break;
-                      default:
-                    }
-                  },
-                  onPositionChanged: (position, value, value2) {
-                    switch (controller.status) {
-                      case AnimationStatus.completed:
-                        controller.reverse();
-                        break;
-                      // case AnimationStatus.dismissed:
-                      //   controller.forward();
-                      //   break;
-                      default:
-                    }
-                  },
-                  plugins: [
-                    MarkerClusterPlugin(),
-                  ]),
-              layers: [
-                TileLayerOptions(
-                  urlTemplate: "https://api.mapbox.com/v4/"
-                      "{id}/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoiaGVnYXp5MzYwIiwiYSI6ImNqeGd0bWxldTA4a2gzb25ydzVycHU5cXUifQ.yB81RAqwBYSAXnLlImaCHg",
-                  additionalOptions: {
-                    'accessToken':
-                        'pk.eyJ1IjoiaGVnYXp5MzYwIiwiYSI6ImNqeGd0bWxldTA4a2gzb25ydzVycHU5cXUifQ.yB81RAqwBYSAXnLlImaCHg',
-                    'id': 'mapbox.streets',
-                  },
-                ),
-                MarkerClusterLayerOptions(
-                  maxClusterRadius: 50,
-                  height: 40,
-                  width: 40,
-                  anchorPos: AnchorPos.align(AnchorAlign.center),
-                  fitBoundsOptions: FitBoundsOptions(
-                    padding: EdgeInsets.all(150),
-                  ),
-                  markers: markers,
-                  polygonOptions: PolygonOptions(
-                      borderColor: Colors.blueAccent,
-                      color: Colors.black12,
-                      borderStrokeWidth: 3),
-                  builder: (context, markers) {
-                    return FloatingActionButton(
-                      heroTag: UniqueKey().toString(),
-                      child: Text(markers.length.toString()),
-                      onPressed: null,
-                    );
-                  },
-                ),
-              ],
-            ),
+            new MapInterface(
+                mapController: mapController,
+                controller: controller,
+                markers: markers),
             activeCompany != null
-                ? Align(
-                    alignment: Alignment.topCenter,
-                    child: SlideTransition(
-                        position: offset,
-                        child: Container(
-                          padding:
-                              EdgeInsets.only(top: 30, right: 10, left: 10),
-                          width: MediaQuery.of(context).size.width,
-                          height: 200,
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Hero(
-                                        tag: 'company_name',
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: Text(
-                                            activeCompany['data']['name'],
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Colors.blueGrey,
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                        )),
-                                  ),
-                                  Stack(
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Hero(
-                                            tag: 'company_image',
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                                child: Container(
-                                                    color: Colors.white,
-                                                    padding: EdgeInsets.all(5),
-                                                    child: FadeInImage
-                                                        .memoryNetwork(
-                                                      placeholder:
-                                                          kTransparentImage,
-                                                      image: activeCompany[
-                                                                  'data']
-                                                              ['logo_url'] ??
-                                                          '',
-                                                      fit: BoxFit.cover,
-                                                      height: 100,
-                                                      width: 100,
-                                                    )
-
-                                                    // Image.network(
-                                                    //   activeCompany['data']
-                                                    //           ['logo_url'] ??
-                                                    //       '',
-                                                    //   fit: BoxFit.cover,
-                                                    //   height: 100,
-                                                    //   width: 100,
-                                                    // ),
-                                                    )),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                activeCompany['data']
-                                                        ['accusations'][0] ??
-                                                    '',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Positioned(
-                                        bottom: 0,
-                                        width: 35,
-                                        right: 8,
-                                        child: FloatingActionButton(
-                                          heroTag: UniqueKey().toString(),
-                                          elevation: 0,
-                                          backgroundColor: Colors.white,
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (_) {
-                                                return CompanyPage(
-                                                  company: activeCompany,
-                                                );
-                                              }),
-                                            );
-                                          },
-                                          child: Icon(
-                                            Icons.info_outline,
-                                            size: 30,
-                                            color: Colors.blueGrey,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        )),
-                  )
+                ? new CompanyPopup(offset: offset, activeCompany: activeCompany)
                 : Container(),
             Positioned(
                 bottom: 30,
@@ -380,8 +157,6 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                     } else {
                       companyFormAlert(context).show();
                     }
-                    // _signIn(context)
-                    //       .then((FirebaseUser user) => print(user));
                   },
                   child: Icon(
                     Icons.add,
@@ -396,7 +171,9 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                   elevation: 3,
                   backgroundColor: Colors.white,
                   onPressed: () {
-                    user == null ? loginAlert(context, 'profile').show() : _open();
+                    user == null
+                        ? loginAlert(context, 'profile').show()
+                        : _open();
                   },
                   child: Icon(
                     Icons.person,
@@ -408,20 +185,34 @@ class MapState extends State<Map> with TickerProviderStateMixin {
   }
 
   Alert loginAlert(BuildContext context, type) {
+    String email;
+    String password;
+
     return Alert(
         context: context,
-        title: "LOGIN",
+        title: "Login",
+        style: AlertStyle(
+          animationType: AnimationType.fromBottom,
+          animationDuration: Duration(milliseconds: 300),
+          titleStyle: TextStyle(fontSize: 16),
+        ),
         content: Container(
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: <Widget>[
               TextField(
+                onChanged: (value) {
+                  email = value;
+                },
                 decoration: InputDecoration(
                   icon: Icon(Icons.account_circle),
-                  labelText: 'Username',
+                  labelText: 'Email',
                 ),
               ),
               TextField(
+                onChanged: (value) {
+                  password = value;
+                },
                 obscureText: true,
                 decoration: InputDecoration(
                   icon: Icon(Icons.lock),
@@ -434,7 +225,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                     text: 'Login',
                     icon: Icons.email,
                     onPressed: () {
-                      Navigator.pop(context);
+                      handleSignInEmail(email, password);
                     },
                     backgroundColor: Colors.blueGrey,
                   )),
@@ -450,11 +241,128 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                 onPressed: () {
                   Navigator.pop(context);
                   _signIn(context).then((value) {
-                    if (type == 'company') companyFormAlert(context).show();
-                    else _open();
+                    if (type == 'company')
+                      companyFormAlert(context).show();
+                    else
+                      _open();
                   });
                 },
               ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  "What?! You don't have an account?",
+                  style: TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              FlatButton.icon(
+                icon: Icon(
+                  Icons.add_circle_outline,
+                ),
+                label: Text(
+                  'Create Account',
+                  style: TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: () {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  signUpAlert(context, 'profile').show();
+                },
+              )
+            ],
+          ),
+        ),
+        buttons: []);
+  }
+
+  Alert signUpAlert(context, type) {
+    String email;
+    String password;
+
+    return Alert(
+        context: context,
+        title: "Sign Up",
+        style: AlertStyle(
+          animationType: AnimationType.fromBottom,
+          animationDuration: Duration(milliseconds: 300),
+          titleStyle: TextStyle(fontSize: 16),
+        ),
+        content: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: <Widget>[
+              TextField(
+                onChanged: (value) {
+                  email = value;
+                },
+                decoration: InputDecoration(
+                  icon: Icon(Icons.account_circle),
+                  labelText: 'Email',
+                ),
+              ),
+              TextField(
+                onChanged: (value) {
+                  password = value;
+                },
+                obscureText: true,
+                decoration: InputDecoration(
+                  icon: Icon(Icons.lock),
+                  labelText: 'Password',
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: SignInButtonBuilder(
+                    text: 'Create account',
+                    icon: Icons.email,
+                    onPressed: () {
+                      handleSignUp(email, password);
+                    },
+                    backgroundColor: Colors.blueGrey,
+                  )),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  "OR",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SignInButton(
+                Buttons.Facebook,
+                text: 'Sign up with Facebook',
+                onPressed: () {
+                  Navigator.pop(context);
+                  _signIn(context).then((value) {
+                    if (type == 'company')
+                      companyFormAlert(context).show();
+                    else
+                      _open();
+                  });
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  "Already have an account?",
+                  style: TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              FlatButton.icon(
+                icon: Icon(
+                  Icons.add_circle_outline,
+                ),
+                label: Text(
+                  'Login',
+                  style: TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: () {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  loginAlert(context, 'profile').show();
+                },
+              )
             ],
           ),
         ),
@@ -469,6 +377,11 @@ class MapState extends State<Map> with TickerProviderStateMixin {
     return Alert(
         context: context,
         title: "REPORT COMPANY",
+        style: AlertStyle(
+          animationType: AnimationType.fromRight,
+          animationDuration: Duration(milliseconds: 300),
+          titleStyle: TextStyle(fontSize: 16),
+        ),
         content: Container(
           width: MediaQuery.of(context).size.width,
           child: Column(
@@ -478,9 +391,11 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                   companyName = value;
                 },
                 decoration: InputDecoration(
-                  icon: Icon(Icons.account_circle),
-                  labelText: 'Company name',
-                ),
+                    icon: Icon(Icons.account_circle),
+                    labelText: 'Company name*',
+                    errorText: companyName != null && companyName.isEmpty
+                        ? 'This field is required!'
+                        : null),
               ),
               TextField(
                 onChanged: (value) {
@@ -516,16 +431,18 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                   label: Text('Send request'),
                   icon: Icon(Icons.add),
                   onPressed: () {
-                    //add company
-                    print(user.uid);
                     Firestore firestore = Firestore.instance;
                     firestore
                         .collection("users")
                         .document(user.uid)
                         .get()
                         .then((ds) {
-                      int reportsCount = ds.data['reports_count'];
-                      Timestamp firstReportDate = ds.data['first_report_date'];
+                      print('itsa mario');
+                      print(ds.data);
+                      int reportsCount =
+                          ds.data == null ? null : ds.data['reports_count'];
+                      Timestamp firstReportDate =
+                          ds.data == null ? null : ds.data['first_report_date'];
                       var data = {
                         'company_name': companyName,
                         'accusations': accusations,
@@ -566,7 +483,15 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                           }, merge: true);
                         } else {
                           //display limit message
-                          print('too early bruh, 5 in one day');
+                          Flushbar(
+                            flushbarPosition: FlushbarPosition.TOP,
+                            title: "Sorry!",
+                            message: "You've reached your daily limit.",
+                            animationDuration: Duration(milliseconds: 500),
+                            icon: Icon(Icons.sentiment_dissatisfied,
+                                color: Colors.white),
+                            duration: Duration(seconds: 3),
+                          )..show(context);
                         }
                       }
                     });
@@ -578,48 +503,185 @@ class MapState extends State<Map> with TickerProviderStateMixin {
         ),
         buttons: []);
   }
-}
 
-class UserInfoDetails {
-  UserInfoDetails(this.providerId, this.uid, this.displayName, this.photoUrl,
-      this.email, this.isAnonymous, this.isEmailVerified, this.providerData);
+  void handleSignInEmail(String email, String password) async {
+    try {
+      final FirebaseUser firebaseUser = await _fAuth.signInWithEmailAndPassword(
+          email: email, password: password);
 
-  /// The provider identifier.
-  final String providerId;
+      setState(() {
+        user = firebaseUser;
+      });
 
-  /// The provider’s user ID for the user.
-  final String uid;
+      print('signInEmail succeeded: $user');
+      Navigator.pop(context);
+    } catch (e) {
+      if (e.code == 'ERROR_USER_NOT_FOUND') {
+        print('user not found');
+        Flushbar(
+          flushbarPosition: FlushbarPosition.TOP,
+          title: "Sorry!",
+          message: "No account has been found!",
+          reverseAnimationCurve: Curves.decelerate,
+          forwardAnimationCurve: Curves.elasticOut,
+          boxShadows: [
+            BoxShadow(
+                color: Colors.red[800],
+                offset: Offset(0.0, 2.0),
+                blurRadius: 3.0)
+          ],
+          mainButton: FlatButton(
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              signUpAlert(context, 'profile').show();
+            },
+            child: Text(
+              "Create Account",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          animationDuration: Duration(milliseconds: 500),
+          icon: Icon(Icons.sentiment_dissatisfied, color: Colors.white),
+          duration: Duration(seconds: 3),
+        )..show(context);
+      }
+      if (e.code == 'ERROR_WRONG_PASSWORD') {
+        print('Wrong password');
+        Flushbar(
+          flushbarPosition: FlushbarPosition.TOP,
+          title: "Oops..",
+          message: "Wrong password",
+          reverseAnimationCurve: Curves.decelerate,
+          forwardAnimationCurve: Curves.elasticOut,
+          boxShadows: [
+            BoxShadow(
+                color: Colors.red[800],
+                offset: Offset(0.0, 2.0),
+                blurRadius: 3.0)
+          ],
+          mainButton: FlatButton(
+            onPressed: () {},
+            child: Text(
+              "Forgot Password",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          animationDuration: Duration(milliseconds: 500),
+          icon: Icon(Icons.sentiment_dissatisfied, color: Colors.white),
+          duration: Duration(seconds: 3),
+        )..show(context);
+      }
+      if (e.code == 'ERROR_INVALID_EMAIL') {
+        print('Something is wrong with the email!');
+        Flushbar(
+          flushbarPosition: FlushbarPosition.TOP,
+          title: "Hmm..",
+          message: "Something is wrong with the email",
+          reverseAnimationCurve: Curves.decelerate,
+          forwardAnimationCurve: Curves.elasticOut,
+          boxShadows: [
+            BoxShadow(
+                color: Colors.red[800],
+                offset: Offset(0.0, 2.0),
+                blurRadius: 3.0)
+          ],
+          animationDuration: Duration(milliseconds: 500),
+          icon: Icon(Icons.sentiment_very_dissatisfied, color: Colors.white),
+          duration: Duration(seconds: 3),
+        )..show(context);
+      }
+      print(e.code);
+    }
+  }
 
-  /// The name of the user.
-  final String displayName;
+  void handleSignUp(email, password) async {
+    try {
+      final FirebaseUser firebaseUser = await _fAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      setState(() {
+        user = firebaseUser;
+      });
 
-  /// The URL of the user’s profile photo.
-  final String photoUrl;
+      print('signUp succeeded: $user');
+      Navigator.pop(context);
+    } catch (e) {
+      if (e.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+        print('user not found');
+        Flushbar(
+          flushbarPosition: FlushbarPosition.TOP,
+          title: "Oh!",
+          message: "An account already exist with this email!",
+          reverseAnimationCurve: Curves.decelerate,
+          forwardAnimationCurve: Curves.elasticOut,
+          boxShadows: [
+            BoxShadow(
+                color: Colors.red[800],
+                offset: Offset(0.0, 2.0),
+                blurRadius: 3.0)
+          ],
+          mainButton: FlatButton(
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              loginAlert(context, 'profile').show();
+            },
+            child: Text(
+              "Login",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          animationDuration: Duration(milliseconds: 500),
+          icon: Icon(Icons.sentiment_dissatisfied, color: Colors.white),
+          duration: Duration(seconds: 3),
+        )..show(context);
+      }
+      if (e.code == 'ERROR_WEAK_PASSWORD') {
+        print('Weak password');
+        Flushbar(
+          flushbarPosition: FlushbarPosition.TOP,
+          title: "Do you even lift password?",
+          message: "Password is not strong enough!",
+          reverseAnimationCurve: Curves.decelerate,
+          forwardAnimationCurve: Curves.elasticOut,
+          boxShadows: [
+            BoxShadow(
+                color: Colors.red[800],
+                offset: Offset(0.0, 2.0),
+                blurRadius: 3.0)
+          ],
+          animationDuration: Duration(milliseconds: 500),
+          icon: Icon(Icons.sentiment_dissatisfied, color: Colors.white),
+          duration: Duration(seconds: 3),
+        )..show(context);
+      }
+      print(e.code);
+    }
+  }
 
-  /// The user’s email address.
-  final String email;
+  _getMarkers() async {
+    QuerySnapshot companiesSnapshot =
+        await Firestore.instance.collection('companies').getDocuments();
+    var companiesList = companiesSnapshot.documents;
 
-  // Check anonymous
-  final bool isAnonymous;
+    companiesList.forEach((company) {
+      company.data['branches'].forEach((geoPoint) {
+        setState(() {
+          tappedPoints.add({
+            'data': company.data,
+            'location': LatLng(
+              geoPoint.latitude,
+              geoPoint.longitude,
+            ),
+          });
+        });
+      });
+    });
+  }
 
-  //Check if email is verified
-  final bool isEmailVerified;
+  void _open() {
+    _innerDrawerKey.currentState.open();
+  }
 
-  //Provider Data
-  final List<ProviderDetails> providerData;
-}
-
-class ProviderDetails {
-  final String providerId;
-
-  final String uid;
-
-  final String displayName;
-
-  final String photoUrl;
-
-  final String email;
-
-  ProviderDetails(
-      this.providerId, this.uid, this.displayName, this.photoUrl, this.email);
+  void _close() {
+    _innerDrawerKey.currentState.close();
+  }
 }
