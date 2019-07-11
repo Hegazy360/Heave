@@ -68,15 +68,6 @@ class CompanyPopup extends StatelessWidget {
                                           height: 100,
                                           width: 100,
                                         )
-
-                                        // Image.network(
-                                        //   activeCompany['data']
-                                        //           ['logo_url'] ??
-                                        //       '',
-                                        //   fit: BoxFit.cover,
-                                        //   height: 100,
-                                        //   width: 100,
-                                        // ),
                                         )),
                               ),
                               Expanded(

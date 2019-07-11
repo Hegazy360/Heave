@@ -28,14 +28,14 @@ class _UserProfileState extends State<UserProfile> {
                       ? widget.user.photoUrl != null
                           ? widget.user.photoUrl + "?height=500"
                           : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg'
-                      : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg',
+                      : '',
                   fit: BoxFit.cover,
                   width: 150,
                   height: 150,
                 )),
           ),
           Text(
-            widget.user != null ? widget.user.displayName?? 'Batman' : 'Batman',
+            widget.user != null ? widget.user.displayName?? 'Batman' : '',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             textAlign: TextAlign.center,
           ),

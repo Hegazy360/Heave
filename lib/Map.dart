@@ -87,17 +87,13 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                 onTap: () {
                   setState(() {
                     activeCompany = company;
+                    switch (controller.status) {
+                      case AnimationStatus.dismissed:
+                        controller.forward();
+                        break;
+                      default:
+                    }
                   });
-
-                  switch (controller.status) {
-                    // case AnimationStatus.completed:
-                    // controller.reverse();
-                    // break;
-                    case AnimationStatus.dismissed:
-                      controller.forward();
-                      break;
-                    default:
-                  }
                 },
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
