@@ -35,7 +35,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
   final GlobalKey<InnerDrawerState> _innerDrawerKey =
       GlobalKey<InnerDrawerState>();
 
-  Future<FirebaseUser> _signIn(BuildContext context) async {
+  Future _signIn(BuildContext context) async {
     var result = await facebookSignIn
         .logInWithReadPermissions(['email', 'public_profile']);
     if (result.status == FacebookLoginStatus.loggedIn) {

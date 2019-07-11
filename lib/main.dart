@@ -33,34 +33,41 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: FancyBottomNavigation(
-        tabs: [
-          TabData(
-            iconData: Icons.map,
-            title: "Companies",
-          ),
-          TabData(iconData: Icons.wb_sunny, title: "Climate"),
-          TabData(
-            iconData: Icons.directions_boat,
-            title: "Ocean",
-          ),
-          TabData(iconData: Icons.person, title: "Animals"),
-        ],
-        onTabChangedListener: (position) {
-          setState(() {
-            currentPage = position;
-          });
-        },
-      ),
-      body: IndexedStack(
-        index: currentPage,
-        children: <Widget>[Map(), GlobalWarming(), Ocean(), Animals()],
-      ),
-    );
+        bottomNavigationBar: FancyBottomNavigation(
+          tabs: [
+            TabData(
+              iconData: Icons.map,
+              title: "Companies",
+            ),
+            TabData(iconData: Icons.wb_sunny, title: "Climate"),
+            TabData(
+              iconData: Icons.directions_boat,
+              title: "Ocean",
+            ),
+            TabData(iconData: Icons.person, title: "Animals"),
+          ],
+          onTabChangedListener: (position) {
+            setState(() {
+              currentPage = position;
+            });
+          },
+        ),
+        body: Center(
+          child: _getPage(currentPage),
+        ));
   }
 
-// Center(
-//         child: _getPage(currentPage),
-//       )
+  _getPage(int page) {
+    switch (page) {
+      case 0:
+        return Map();
+      case 1:
+        return GlobalWarming();
+      case 2:
+        return Ocean();
+      default:
+        return Animals();
+    }
+  }
 
 }
