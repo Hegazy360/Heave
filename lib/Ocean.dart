@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:heave/WebViewContainer.dart';
 import 'package:intl/intl.dart';
 
 class Ocean extends StatefulWidget {
+  Ocean(authenticated);
+
   @override
   _OceanState createState() => _OceanState();
 }
@@ -74,8 +78,12 @@ class _OceanState extends State<Ocean> {
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.only(right: 5.0),
-                              child: Image.network(
-                                list[index]['urlToImage']?? '',
+                              child: CachedNetworkImage(
+                                placeholder: (context, url) => SpinKitPulse(
+                                      color: Colors.blueGrey,
+                                      size: 25.0,
+                                    ),
+                                imageUrl: list[index]['urlToImage'] ?? 'https://via.placeholder.com/140x100',
                                 fit: BoxFit.cover,
                                 height: 100.0,
                               ),

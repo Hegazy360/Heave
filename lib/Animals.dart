@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:transparent_image/transparent_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Animals extends StatefulWidget {
+  Animals(authenticated);
+
   @override
   _AnimalsState createState() => _AnimalsState();
 }
@@ -88,11 +91,15 @@ class _AnimalsState extends State<Animals> {
                               Expanded(
                                 child: Padding(
                                   padding: EdgeInsets.only(right: 5.0),
-                                  child: FadeInImage.memoryNetwork(
-                                    placeholder: kTransparentImage,
-                                    image: animalsList[index]['image'] ?? '',
+                                  child: CachedNetworkImage(
+                                    placeholder: (context, url) => SpinKitPulse(
+                                          color: Colors.blueGrey,
+                                          size: 25.0,
+                                        ),
+                                    imageUrl: animalsList[index]['image'] ?? 'https://via.placeholder.com/140x100',
                                     fit: BoxFit.cover,
                                     height: 120,
+                                    fadeInDuration: Duration(seconds: 1),
                                   ),
                                 ),
                               )

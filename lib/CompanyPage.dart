@@ -1,19 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:heave/WebViewContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player/youtube_player.dart';
-import 'package:transparent_image/transparent_image.dart';
 
-class CompanyPage extends StatefulWidget {
+class CompanyPage extends StatelessWidget {
   final company;
-  const CompanyPage({
-    Key key,
-    this.company,
-  }) : super(key: key);
-  @override
-  _CompanyPageState createState() => _CompanyPageState();
-}
 
-class _CompanyPageState extends State<CompanyPage> {
+  CompanyPage(this.company);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +35,7 @@ class _CompanyPageState extends State<CompanyPage> {
                   tag: 'company_name',
                   child: Material(
                     color: Colors.transparent,
-                    child: Text(widget.company['data']['name'],
+                    child: Text(company['data']['name'],
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.blueGrey,
@@ -55,12 +50,17 @@ class _CompanyPageState extends State<CompanyPage> {
                       child: Container(
                           color: Colors.white,
                           padding: EdgeInsets.all(0),
-                          child: FadeInImage.memoryNetwork(
-                            placeholder: kTransparentImage,
-                            image: widget.company['data']['logo_url'] ?? '',
+                          child: CachedNetworkImage(
+                            placeholder: (context, url) => SpinKitPulse(
+                                  color: Colors.blueGrey,
+                                  size: 25.0,
+                                ),
+                            imageUrl: company['data']['logo_url'] ??
+                                'https://via.placeholder.com/140x100',
                             fit: BoxFit.cover,
                             height: 130,
                             width: 130,
+                            fadeInDuration: Duration(seconds: 1),
                           )),
                     ))
               ],
@@ -68,27 +68,24 @@ class _CompanyPageState extends State<CompanyPage> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: widget.company['data']['sources'].length,
+              itemCount: company['data']['sources'].length,
               itemBuilder: (_, index) {
-                return widget.company['data']['sources'][index]['type'] ==
-                        'video'
+                return company['data']['sources'][index]['type'] == 'video'
                     ? Column(
                         children: <Widget>[
-                          Text(
-                              widget.company['data']['sources'][index]['title'],
+                          Text(company['data']['sources'][index]['title'],
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16)),
                           Padding(
                             padding:
                                 const EdgeInsets.only(top: 8.0, bottom: 10.0),
-                            child: Text(widget.company['data']['sources'][index]
-                                ['publisher']),
+                            child: Text(
+                                company['data']['sources'][index]['publisher']),
                           ),
                           YoutubePlayer(
                             context: context,
-                            source: widget.company['data']['sources'][index]
-                                ['value'],
+                            source: company['data']['sources'][index]['value'],
                             quality: YoutubeQuality.HD,
                             autoPlay: false,
                           )
@@ -99,15 +96,13 @@ class _CompanyPageState extends State<CompanyPage> {
                             top: 20, bottom: 10, left: 10, right: 10),
                         child: Column(
                           children: <Widget>[
-                            Text(
-                                widget.company['data']['sources'][index]
-                                    ['title'],
+                            Text(company['data']['sources'][index]['title'],
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16)),
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(widget.company['data']['sources']
-                                  [index]['publisher']),
+                              child: Text(company['data']['sources'][index]
+                                  ['publisher']),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -120,15 +115,12 @@ class _CompanyPageState extends State<CompanyPage> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder:
-                                                (context) =>
-                                                    WebViewContainer(
-                                                        widget.company['data']
-                                                                ['sources']
-                                                            [index]['value'],
-                                                        widget.company['data']
-                                                                ['sources']
-                                                            [index]['title'])));
+                                            builder: (context) =>
+                                                WebViewContainer(
+                                                    company['data']['sources']
+                                                        [index]['value'],
+                                                    company['data']['sources']
+                                                        [index]['title'])));
                                   },
                                   icon: Icon(
                                     Icons.remove_red_eye,
@@ -146,3 +138,13 @@ class _CompanyPageState extends State<CompanyPage> {
     );
   }
 }
+
+// class CompanyPage extends StatelessWidget {
+//   final company;
+//   const CompanyPage({
+//     Key key,
+//     this.company,
+//   }) : super(key: key);
+//   @override
+//   _CompanyPageState createState() => _CompanyPageState();
+// }

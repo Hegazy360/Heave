@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:latlong/latlong.dart';
 
 class MapInterface extends StatelessWidget {
-  const MapInterface({
-    Key key,
-    @required this.mapController,
-    @required this.controller,
-    @required this.markers,
-  }) : super(key: key);
+  const MapInterface(
+      {Key key,
+      @required this.mapController,
+      @required this.controller,
+      @required this.markers,
+      this.position})
+      : super(key: key);
 
   final MapController mapController;
   final AnimationController controller;
   final List<Marker> markers;
+  final position;
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
-          center: LatLng(51.5, -0.09),
-          zoom: 3.0,
+          center: position,
+          zoom: 6.0,
           minZoom: 3.0,
           maxZoom: 10.0,
           onTap: (position) {
