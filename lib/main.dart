@@ -2,7 +2,7 @@ import 'package:heave/Map.dart';
 import 'package:heave/Ocean.dart';
 import 'package:flutter/material.dart';
 import 'package:heave/Animals.dart';
-import 'package:heave/GlobalWarming.dart';
+import 'package:heave/News.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,9 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         return Map(user);
       case 1:
-        return GlobalWarming(user);
+        return News(user);
       case 2:
-        return Ocean(user);
+        return Pictures(user);
       default:
         return Animals(user);
     }

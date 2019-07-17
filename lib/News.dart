@@ -6,27 +6,27 @@ import 'package:http/http.dart' as http;
 import 'package:heave/WebViewContainer.dart';
 import 'package:intl/intl.dart';
 
-class GlobalWarming extends StatefulWidget {
-  GlobalWarming(authenticated);
+class News extends StatefulWidget {
+  News(authenticated);
 
   @override
-  _GlobalWarmingState createState() => _GlobalWarmingState();
+  _NewsState createState() => _NewsState();
 }
 
-class _GlobalWarmingState extends State<GlobalWarming> {
-  List list = List();
+class _NewsState extends State<News> {
+  List climateNewsList = List();
+  List oceanNewsList = List();
   var isLoading = false;
 
-  _fetchData() async {
+  _fetchClimateNews() async {
     setState(() {
       isLoading = true;
     });
     final response = await http.get(
         "https://newsapi.org/v2/everything?q=global+warming&sortBy=publishedAt&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
     if (response.statusCode == 200) {
-      list = json.decode(response.body)['articles'] as List;
-      print(list);
       setState(() {
+        climateNewsList = json.decode(response.body)['articles'] as List;
         isLoading = false;
       });
     } else {
@@ -34,11 +34,67 @@ class _GlobalWarmingState extends State<GlobalWarming> {
     }
   }
 
+  _fetchOceanNews() async {
+    setState(() {
+      isLoading = true;
+    });
+    final response = await http.get(
+        "https://newsapi.org/v2/everything?q=ocean+pollution+plastic&sortBy=publishedAt&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
+    if (response.statusCode == 200) {
+      setState(() {
+        oceanNewsList = json.decode(response.body)['articles'] as List;
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Failed to load photos');
+    }
+  }
+
   @override
   void initState() {
-    _fetchData();
+    _fetchClimateNews();
+    _fetchOceanNews();
     super.initState();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text("News", style: TextStyle(color: Colors.black),),
+          bottom: TabBar(
+            labelColor: Colors.black,
+            indicatorColor: Colors.blueGrey,
+            unselectedLabelColor: Colors.black45,
+            tabs: [
+              Tab(icon: Icon(Icons.wb_sunny)),
+              Tab(icon: Icon(Icons.directions_boat)),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            NewsList(isLoading: isLoading, newsList: climateNewsList),
+            NewsList(isLoading: isLoading, newsList: oceanNewsList),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class NewsList extends StatelessWidget {
+  const NewsList({
+    Key key,
+    @required this.isLoading,
+    @required this.newsList,
+  }) : super(key: key);
+
+  final bool isLoading;
+  final List newsList;
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +104,11 @@ class _GlobalWarmingState extends State<GlobalWarming> {
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
-              itemCount: list.length,
+              itemCount: newsList.length,
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
-                  onTap: () => _handleURLButtonPress(
-                      context, list[index]['url'], list[index]['title']),
+                  onTap: () => _handleURLButtonPress(context,
+                      newsList[index]['url'], newsList[index]['title']),
                   child: Card(
                       child: Column(
                     children: <Widget>[
@@ -65,12 +121,12 @@ class _GlobalWarmingState extends State<GlobalWarming> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  list[index]['title'],
+                                  newsList[index]['title'],
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(top: 5.0),
-                                  child: Text(list[index]['description']),
+                                  child: Text(newsList[index]['description']),
                                 )
                               ],
                             ),
@@ -83,7 +139,12 @@ class _GlobalWarmingState extends State<GlobalWarming> {
                                       color: Colors.blueGrey,
                                       size: 25.0,
                                     ),
-                                imageUrl: list[index]['urlToImage'] ?? 'https://via.placeholder.com/140x100',
+                                imageUrl:
+                                    newsList[index]['urlToImage'].isNotEmpty
+                                        ? newsList[index]['urlToImage']
+                                        : 'https://via.placeholder.com/140x100',
+                                errorWidget: (context, url, _) =>
+                                    Icon(Icons.error, color: Colors.red),
                                 fit: BoxFit.cover,
                                 height: 100.0,
                               ),
@@ -98,14 +159,14 @@ class _GlobalWarmingState extends State<GlobalWarming> {
                           Padding(
                             padding: EdgeInsets.only(left: 15, bottom: 10),
                             child: Text(
-                                DateFormat.yMMMd().format(
-                                    DateTime.parse(list[index]['publishedAt'])),
+                                DateFormat.yMMMd().format(DateTime.parse(
+                                    newsList[index]['publishedAt'])),
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 5, bottom: 10),
                             child: Text(
-                              list[index]['source']['name'],
+                              newsList[index]['source']['name'],
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
