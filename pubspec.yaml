@@ -24,16 +24,16 @@ dependencies:
   fancy_bottom_navigation: ^0.3.2
   cloud_firestore: ^0.12.5
   webview_flutter: ^0.3.9+1
-  flutter_map: any
-  flutter_map_marker_cluster: any
+  flutter_map: ^0.5.6
+  flutter_map_marker_cluster: ^0.2.1
   transparent_image: ^1.0.0
-  flutter_spinkit: "^3.1.0"
+  flutter_spinkit: ^3.1.0
   flutter_facebook_login: ^2.0.1
   firebase_auth: ^0.11.1+7
   rflutter_alert: ^1.0.3
   flutter_signin_button: ^0.2.8
   flutter_inner_drawer: ^0.2.9
-  flushbar: '1.5.3'
+  flushbar: ^1.7.1+1
   bloc: ^0.14.0
   flutter_bloc: ^0.19.0
   equatable: ^0.2.6
