@@ -35,7 +35,8 @@ class CompanyPopup extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: <Widget>[
-                            Padding(
+                            Container(
+                              width: MediaQuery.of(context).size.width,
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Hero(
                                   tag: 'company_name',

@@ -17,6 +17,7 @@ import 'package:heave/blocs/login_bloc/bloc.dart';
 import 'package:heave/blocs/authentication_bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:floating_action_row/floating_action_row.dart';
 
 class Map extends StatefulWidget {
   static const String route = 'map_controller_animated';
@@ -219,11 +220,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                                                 placeholder: (context,
                                                                         url) =>
                                                                     SpinKitPulse(
-                                                                      color: Colors
-                                                                          .blueGrey,
-                                                                      size:
-                                                                          25.0,
-                                                                    ),
+                                                                  color: Colors
+                                                                      .blueGrey,
+                                                                  size: 25.0,
+                                                                ),
                                                                 imageUrl: company[
                                                                             'data']
                                                                         [
@@ -248,39 +248,71 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                       Positioned(
                           bottom: 30,
                           right: 20,
-                          child: FloatingActionButton(
-                            heroTag: "add",
-                            elevation: 3,
-                            backgroundColor: Colors.white,
-                            onPressed: () async {
-                              if (widget.user != null) {
-                                companyFormAlert(context).show();
-                              } else {
-                                loginAlert(context, 'company').show();
-                              }
-                            },
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.blueGrey,
-                            ),
+                          child: FloatingActionRow(
+                            axis: Axis.vertical,
+                            children: [
+                              FloatingActionRowButton(
+                                icon: Icon(
+                                  Icons.person,
+                                  color: Colors.blueGrey,
+                                ),
+                                onTap: () {
+                                  widget.user != null
+                                      ? _open()
+                                      : loginAlert(context, 'profile').show();
+                                },
+                              ),
+                              FloatingActionRowDivider(color: Colors.blueGrey),
+                              FloatingActionRowButton(
+                                icon: Icon(Icons.add, color: Colors.blueGrey),
+                                onTap: () {
+                                  if (widget.user != null) {
+                                    companyFormAlert(context).show();
+                                  } else {
+                                    loginAlert(context, 'company').show();
+                                  }
+                                },
+                              ),
+                            ],
+                            color: Colors.white,
+                            elevation: 4,
                           )),
-                      Positioned(
-                          bottom: 100,
-                          right: 20,
-                          child: FloatingActionButton(
-                            heroTag: "disconnect",
-                            elevation: 3,
-                            backgroundColor: Colors.white,
-                            onPressed: () {
-                              widget.user != null
-                                  ? _open()
-                                  : loginAlert(context, 'profile').show();
-                            },
-                            child: Icon(
-                              Icons.person,
-                              color: Colors.blueGrey,
-                            ),
-                          )),
+                      // Positioned(
+                      //     bottom: 30,
+                      //     right: 20,
+                      //     child: FloatingActionButton(
+                      //       heroTag: "add",
+                      //       elevation: 3,
+                      //       backgroundColor: Colors.white,
+                      //       onPressed: () async {
+                      //         if (widget.user != null) {
+                      //           companyFormAlert(context).show();
+                      //         } else {
+                      //           loginAlert(context, 'company').show();
+                      //         }
+                      //       },
+                      //       child: Icon(
+                      //         Icons.add,
+                      //         color: Colors.blueGrey,
+                      //       ),
+                      //     )),
+                      // Positioned(
+                      //     bottom: 100,
+                      //     right: 20,
+                      //     child: FloatingActionButton(
+                      //       heroTag: "disconnect",
+                      //       elevation: 3,
+                      //       backgroundColor: Colors.white,
+                      //       onPressed: () {
+                      //         widget.user != null
+                      //             ? _open()
+                      //             : loginAlert(context, 'profile').show();
+                      //       },
+                      //       child: Icon(
+                      //         Icons.person,
+                      //         color: Colors.blueGrey,
+                      //       ),
+                      //     )),
                     ],
                   );
                 })));
