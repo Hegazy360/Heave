@@ -64,7 +64,10 @@ class _NewsState extends State<News> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text("News", style: TextStyle(color: Colors.black),),
+          title: Text(
+            "News",
+            style: TextStyle(color: Colors.black),
+          ),
           bottom: TabBar(
             labelColor: Colors.black,
             indicatorColor: Colors.blueGrey,
@@ -110,70 +113,97 @@ class NewsList extends StatelessWidget {
                   onTap: () => _handleURLButtonPress(context,
                       newsList[index]['url'], newsList[index]['title']),
                   child: Card(
-                      child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(15),
-                            width: MediaQuery.of(context).size.width * 2 / 3,
+                    child: CachedNetworkImage(
+                      imageUrl: newsList[index]['urlToImage'] != null &&
+                              newsList[index]['urlToImage'].isNotEmpty
+                          ? newsList[index]['urlToImage']
+                          : 'https://via.placeholder.com/140x100',
+                      imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(
-                                  newsList[index]['title'],
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      padding: EdgeInsets.all(15),
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            newsList[index]['title'],
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 5.0),
+                                            child: Text(
+                                                newsList[index]['description']),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    // Expanded(
+                                    //   child: Padding(
+                                    //     padding: EdgeInsets.only(right: 5.0),
+                                    //     child: CachedNetworkImage(
+                                    //       placeholder: (context, url) => SpinKitPulse(
+                                    //             color: Colors.blueGrey,
+                                    //             size: 25.0,
+                                    //           ),
+                                    //       imageUrl: newsList[index]['urlToImage'] != null &&
+                                    //               newsList[index]['urlToImage'].isNotEmpty
+                                    //           ? newsList[index]['urlToImage']
+                                    //           : 'https://via.placeholder.com/140x100',
+                                    //       errorWidget: (context, url, _) =>
+                                    //           Icon(Icons.error, color: Colors.red),
+                                    //       fit: BoxFit.cover,
+                                    //       height: 100.0,
+                                    //     ),
+                                    //   ),
+                                    // )
+                                  ],
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 5.0),
-                                  child: Text(newsList[index]['description']),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 15, bottom: 10),
+                                      child: Text(
+                                          DateFormat.yMMMd().format(
+                                              DateTime.parse(newsList[index]
+                                                  ['publishedAt'])),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.only(right: 5, bottom: 10),
+                                      child: Text(
+                                        newsList[index]['source']['name'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
                                 )
                               ],
                             ),
                           ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 5.0),
-                              child: CachedNetworkImage(
-                                placeholder: (context, url) => SpinKitPulse(
-                                      color: Colors.blueGrey,
-                                      size: 25.0,
-                                    ),
-                                imageUrl:
-                                    newsList[index]['urlToImage'].isNotEmpty
-                                        ? newsList[index]['urlToImage']
-                                        : 'https://via.placeholder.com/140x100',
-                                errorWidget: (context, url, _) =>
-                                    Icon(Icons.error, color: Colors.red),
-                                fit: BoxFit.cover,
-                                height: 100.0,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(left: 15, bottom: 10),
-                            child: Text(
-                                DateFormat.yMMMd().format(DateTime.parse(
-                                    newsList[index]['publishedAt'])),
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 5, bottom: 10),
-                            child: Text(
-                              newsList[index]['source']['name'],
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  )),
+                      placeholder: (context, url) =>
+                          CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ),
                 );
               }),
     );

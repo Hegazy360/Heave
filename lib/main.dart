@@ -1,5 +1,5 @@
 import 'package:heave/Map.dart';
-import 'package:heave/Ocean.dart';
+import 'package:heave/Pictures.dart';
 import 'package:flutter/material.dart';
 import 'package:heave/Animals.dart';
 import 'package:heave/News.dart';
@@ -8,6 +8,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:heave/blocs/authentication_bloc/bloc.dart';
 import 'package:heave/blocs/company_popup/companypopup_bloc.dart';
+import 'package:heave/blocs/picture_bloc/picture_bloc.dart';
 import 'package:heave/repositories/user_repository.dart';
 import 'package:heave/blocs/simple_bloc_delegate.dart';
 import 'package:heave/blocs/login_bloc/bloc.dart';
@@ -52,6 +53,9 @@ class MyApp extends StatelessWidget {
           BlocProvider<CompanypopupBloc>(
             builder: (BuildContext context) => CompanypopupBloc(),
           ),
+          BlocProvider<PictureBloc>(
+            builder: (BuildContext context) => PictureBloc(),
+          ),
         ],
         child: MyHomePage(),
       ),
@@ -83,8 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   TabData(iconData: Icons.wb_sunny, title: "Climate"),
                   TabData(
-                    iconData: Icons.directions_boat,
-                    title: "Ocean",
+                    iconData: Icons.photo,
+                    title: "Pictures",
                   ),
                   TabData(iconData: Icons.person, title: "Animals"),
                 ],
