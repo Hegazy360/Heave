@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:heave/blocs/animal_bloc/bloc.dart';
 
 class Animals extends StatefulWidget {
   Animals(authenticated);
@@ -11,8 +13,6 @@ class Animals extends StatefulWidget {
 }
 
 class _AnimalsState extends State<Animals> {
-  var animalsList;
-  var isLoading = false;
   List colors = [
     Colors.greenAccent,
     Colors.orangeAccent,
@@ -22,127 +22,90 @@ class _AnimalsState extends State<Animals> {
     Colors.redAccent[400]
   ];
 
+  AnimalBloc _animalsBloc;
+
   @override
   void initState() {
-    super.initState();
-    _fetchAnimals();
-  }
+    _animalsBloc = BlocProvider.of<AnimalBloc>(context);
+    _animalsBloc.dispatch(FetchAnimals());
 
-  _fetchAnimals() async {
-    setState(() {
-      isLoading = true;
-    });
-    await Firestore.instance
-        .collection('animals')
-        .orderBy("level", descending: true)
-        .getDocuments()
-        .then((animalsSnapshot) {
-      setState(() {
-        animalsList = animalsSnapshot.documents;
-        isLoading = false;
-      });
-    });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : ListView.builder(
-              itemCount: animalsList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () => {},
-                  child: Card(
-                      color: colors[animalsList[index]['level']],
+      child: BlocBuilder(
+          bloc: _animalsBloc,
+          builder: (BuildContext context, AnimalState state) {
+            if (state is AnimalsLoaded)
+              return ListView.builder(
+                  itemCount: state.animals.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () => {},
                       child: Card(
-                          child: Column(
-                        children: <Widget>[
-                          Row(
+                          color: colors[state.animals[index]['level']],
+                          child: Card(
+                              child: Column(
                             children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.all(15),
-                                width:
-                                    MediaQuery.of(context).size.width * 2 / 3,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      animalsList[index]['name'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 5.0),
-                                      child: Text(
-                                          animalsList[index]['status'] ??
-                                              'Stable',
+                              Row(
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.all(15),
+                                    width: MediaQuery.of(context).size.width *
+                                        2 /
+                                        3,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          state.animals[index]['name'],
                                           style: TextStyle(
-                                              color: colors[animalsList[index]
-                                                  ['level']],
-                                              fontWeight: FontWeight.bold)),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(right: 5.0),
-                                  child: CachedNetworkImage(
-                                    placeholder: (context, url) => SpinKitPulse(
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 5.0),
+                                          child: Text(
+                                              state.animals[index]['status'] ??
+                                                  'Stable',
+                                              style: TextStyle(
+                                                  color: colors[state
+                                                      .animals[index]['level']],
+                                                  fontWeight: FontWeight.bold)),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: 5.0),
+                                      child: CachedNetworkImage(
+                                        placeholder: (context, url) =>
+                                            SpinKitPulse(
                                           color: Colors.blueGrey,
                                           size: 25.0,
                                         ),
-                                    imageUrl: animalsList[index]['image'] ?? 'https://via.placeholder.com/140x100',
-                                    fit: BoxFit.cover,
-                                    height: 120,
-                                    fadeInDuration: Duration(seconds: 1),
-                                  ),
-                                ),
-                              )
+                                        imageUrl: state.animals[index]
+                                                ['image'] ??
+                                            'https://via.placeholder.com/140x100',
+                                        fit: BoxFit.cover,
+                                        height: 120,
+                                        fadeInDuration: Duration(seconds: 1),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ],
-                          ),
-                          // Row(
-                          //   crossAxisAlignment: CrossAxisAlignment.center,
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: <Widget>[
-                          //     Padding(
-                          //       padding: EdgeInsets.only(left: 15, bottom: 10),
-                          //       child: Text(
-                          //           DateFormat.yMMMd().format(
-                          //               DateTime.parse(list[index]['publishedAt'])),
-                          //           style: TextStyle(fontWeight: FontWeight.bold)),
-                          //     ),
-                          //     Padding(
-                          //       padding: EdgeInsets.only(right: 5, bottom: 10),
-                          //       child: Text(
-                          //         list[index]['source']['name'],
-                          //         style: TextStyle(fontWeight: FontWeight.bold),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // )
-                        ],
-                      ))
-
-                      //     ListTile(
-                      //   contentPadding: EdgeInsets.all(20.0),
-                      //   title: Text(animalsList[index]['name'], style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),),
-                      //   subtitle: Text(animalsList[index]['status'] ?? 'Stable', style: TextStyle(color: Colors.white)),
-                      //   trailing: Image.network(
-                      //     animalsList[index]['image'] ?? '',
-                      //     fit: BoxFit.cover,
-                      //     alignment: Alignment.center,
-                      //     height: 115.0,
-                      //     width: 115.0,
-                      //   ),
-                      // )
-                      ),
-                );
-              }),
+                          ))),
+                    );
+                  });
+            if (state is AnimalsUninitialized)
+              return Center(child: CircularProgressIndicator());
+            return Container();
+          }),
     );
   }
 }

@@ -45,7 +45,8 @@ class _PicturesState extends State<Pictures> {
                   ));
                 });
           if (state is PicturesUninitialized)
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
+          return Container();
         });
   }
 }

@@ -63,13 +63,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
   }
 
   void _getUserLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(position);
-    if (position != null)
-      this.setState(() {
-        userPosition = LatLng(position.latitude, position.longitude);
-      });
+
   }
 
   @override

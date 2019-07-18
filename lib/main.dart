@@ -6,9 +6,11 @@ import 'package:heave/News.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:heave/blocs/animal_bloc/bloc.dart';
 import 'package:heave/blocs/authentication_bloc/bloc.dart';
 import 'package:heave/blocs/company_popup/companypopup_bloc.dart';
 import 'package:heave/blocs/picture_bloc/picture_bloc.dart';
+import 'package:heave/blocs/news_bloc/news_bloc.dart';
 import 'package:heave/repositories/user_repository.dart';
 import 'package:heave/blocs/simple_bloc_delegate.dart';
 import 'package:heave/blocs/login_bloc/bloc.dart';
@@ -55,6 +57,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<PictureBloc>(
             builder: (BuildContext context) => PictureBloc(),
+          ),
+          BlocProvider<NewsBloc>(
+            builder: (BuildContext context) => NewsBloc(),
+          ),
+          BlocProvider<AnimalBloc>(
+            builder: (BuildContext context) => AnimalBloc(),
           ),
         ],
         child: MyHomePage(),
