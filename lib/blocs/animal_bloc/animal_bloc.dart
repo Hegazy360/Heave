@@ -25,11 +25,26 @@ class AnimalBloc extends Bloc<AnimalEvent, AnimalState> {
   }
 
   Future<List> fetchAnimals() async {
-    QuerySnapshot animalsSnapshot = await Firestore.instance
+    QuerySnapshot animalsSnapshotCache = await Firestore.instance
         .collection('animals')
         .orderBy("level", descending: true)
-        .getDocuments();
+        .getDocuments(source: Source.cache);
 
-    return animalsSnapshot.documents;
+    var animalsList;
+
+    if (animalsSnapshotCache.documents.length > 0) {
+      print("CACHE FOUND");
+      animalsList = animalsSnapshotCache.documents;
+    } else {
+      print("NO CACHE FOUND");
+      print("Retrieving");
+      QuerySnapshot companiesSnapshot = await Firestore.instance
+          .collection('animals')
+          .orderBy("level", descending: true)
+          .getDocuments();
+      animalsList = companiesSnapshot.documents;
+    }
+
+    return animalsList;
   }
 }

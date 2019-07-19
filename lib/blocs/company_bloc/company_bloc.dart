@@ -26,11 +26,23 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   }
 
   Future<List> _fetchCompanies() async {
-    QuerySnapshot companiesSnapshot =
-        await Firestore.instance.collection('companies').getDocuments();
+    QuerySnapshot companiesSnapshotCache = await Firestore.instance
+        .collection('companies')
+        .getDocuments(source: Source.cache);
 
-    var companiesList = companiesSnapshot.documents;
+    var companiesList;
     var companies = [];
+
+    if (companiesSnapshotCache.documents.length > 0) {
+      print("CACHE FOUND");
+      companiesList = companiesSnapshotCache.documents;
+    } else {
+      print("NO CACHE FOUND");
+      print("Retrieving");
+      QuerySnapshot companiesSnapshot =
+          await Firestore.instance.collection('companies').getDocuments();
+      companiesList = companiesSnapshot.documents;
+    }
 
     companiesList.forEach((company) {
       company.data['branches'].forEach((geoPoint) {

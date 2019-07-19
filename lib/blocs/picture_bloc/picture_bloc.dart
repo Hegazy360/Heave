@@ -25,15 +25,26 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
   }
 
   Future<List> fetchPictures() async {
-    QuerySnapshot picturesSnapshot = await Firestore.instance
+    QuerySnapshot picturesSnapshotCache = await Firestore.instance
+        .collection('pictures')
+        .orderBy("date", descending: true)
+        .getDocuments(source: Source.cache);
+
+    var picturesList;
+
+    if (picturesSnapshotCache.documents.length > 0) {
+      print("CACHE FOUND");
+      picturesList = picturesSnapshotCache.documents;
+    } else {
+      print("NO CACHE FOUND");
+      print("Retrieving");
+      QuerySnapshot companiesSnapshot = await Firestore.instance
         .collection('pictures')
         .orderBy("date", descending: true)
         .getDocuments();
+      picturesList = companiesSnapshot.documents;
+    }
 
-    print('here boi');
-    print(picturesSnapshot.documents);
-    
-
-    return picturesSnapshot.documents;
+    return picturesList;
   }
 }

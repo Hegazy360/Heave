@@ -16,7 +16,6 @@ import 'package:flushbar/flushbar.dart';
 import 'package:heave/blocs/login_bloc/bloc.dart';
 import 'package:heave/blocs/authentication_bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:floating_action_row/floating_action_row.dart';
 
 class Map extends StatefulWidget {
