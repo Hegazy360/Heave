@@ -5,6 +5,8 @@ import 'package:heave/CompanyPage.dart';
 import 'package:flutter/material.dart';
 import 'package:heave/blocs/company_popup/companypopup_bloc.dart';
 import 'package:heave/blocs/company_popup/companypopup_state.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class CompanyPopup extends StatelessWidget {
   const CompanyPopup({
@@ -67,9 +69,9 @@ class CompanyPopup extends StatelessWidget {
                                               child: CachedNetworkImage(
                                                 placeholder: (context, url) =>
                                                     SpinKitPulse(
-                                                      color: Colors.blueGrey,
-                                                      size: 25.0,
-                                                    ),
+                                                  color: Colors.blueGrey,
+                                                  size: 25.0,
+                                                ),
                                                 imageUrl: state.company['data']
                                                         ['logo_url'] ??
                                                     'https://via.placeholder.com/140x100',
@@ -81,35 +83,43 @@ class CompanyPopup extends StatelessWidget {
                                               ))),
                                     ),
                                     Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          state.company['data']['accusations']
-                                                  [0] ??
-                                              '',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400),
+                                      child: Hero(
+                                        tag: 'company_accusations',
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: Container(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              width: 200,
+                                              child: Text(
+                                                state.company['data']
+                                                        ['accusations'][0] ??
+                                                    '',
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              )),
                                         ),
                                       ),
                                     )
                                   ],
                                 ),
                                 Positioned(
-                                  bottom: 0,
+                                  bottom: -10,
                                   width: 35,
-                                  right: 8,
-                                  child: FloatingActionButton(
-                                    heroTag: UniqueKey().toString(),
+                                  right: 20,
+                                  child: RaisedButton(
                                     elevation: 0,
-                                    backgroundColor: Colors.white,
+                                    color: Colors.white,
                                     onPressed: () {
                                       Navigator.push(
                                           context,
-                                          PageRouteBuilder(
-                                              transitionDuration:
-                                                  Duration(milliseconds: 500),
-                                              pageBuilder: (_, __, ___) =>
+                                          PageTransition(
+                                              duration:
+                                                  Duration(milliseconds: 700),
+                                              type: PageTransitionType.fade,
+                                              child:
                                                   CompanyPage(state.company)));
                                     },
                                     child: Icon(
@@ -118,6 +128,24 @@ class CompanyPopup extends StatelessWidget {
                                       color: Colors.blueGrey,
                                     ),
                                   ),
+                                ),
+                                Positioned(
+                                  bottom: -10,
+                                  width: 35,
+                                  right: 60,
+                                  child: RaisedButton(
+                                      elevation: 0,
+                                      color: Colors.white,
+                                      onPressed: () {
+                                        sendEmail();
+                                      },
+                                      child: Hero(
+                                          tag: 'email_icon',
+                                          child: Icon(
+                                            Icons.email,
+                                            size: 30,
+                                            color: Colors.blueGrey,
+                                          ))),
                                 )
                               ],
                             )
@@ -130,5 +158,20 @@ class CompanyPopup extends StatelessWidget {
           }
           return Container();
         });
+  }
+
+  Future<void> sendEmail() async {
+    final Email email = Email(
+      body: 'Email body',
+      subject: 'Email subject',
+      recipients: ['test@test.com'],
+      cc: ['m.hegazy94@hotmail.com'],
+    );
+
+    try {
+      await FlutterEmailSender.send(email);
+    } catch (error) {
+      print(error.toString());
+    }
   }
 }

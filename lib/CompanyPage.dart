@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:heave/WebViewContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player/youtube_player.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class CompanyPage extends StatelessWidget {
   final company;
@@ -27,21 +28,39 @@ class CompanyPage extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.fromLTRB(15.0, 5.0, 15.0, 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                Hero(
-                  tag: 'company_name',
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Text(company['data']['name'],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.blueGrey,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500)),
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Hero(
+                      tag: 'company_name',
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Text(company['data']['name'],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500)),
+                      ),
+                    ),
+                    Hero(
+                      tag: 'company_accusations',
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Container(
+                            width: 240,
+                            child: Text(
+                              company['data']['accusations'][0] ?? '',
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w400),
+                            )),
+                      ),
+                    ),
+                  ],
                 ),
                 Hero(
                     tag: 'company_image',
@@ -52,9 +71,9 @@ class CompanyPage extends StatelessWidget {
                           padding: EdgeInsets.all(0),
                           child: CachedNetworkImage(
                             placeholder: (context, url) => SpinKitPulse(
-                                  color: Colors.blueGrey,
-                                  size: 25.0,
-                                ),
+                              color: Colors.blueGrey,
+                              size: 25.0,
+                            ),
                             imageUrl: company['data']['logo_url'] ??
                                 'https://via.placeholder.com/140x100',
                             fit: BoxFit.cover,
@@ -65,6 +84,14 @@ class CompanyPage extends StatelessWidget {
                     ))
               ],
             ),
+          ),
+          RaisedButton.icon(
+            color: Colors.white,
+            icon: Hero(tag: 'email_icon', child: Icon(Icons.email)),
+            label: Text('Send Email'),
+            onPressed: () {
+              sendEmail();
+            },
           ),
           Expanded(
             child: ListView.builder(
@@ -136,6 +163,21 @@ class CompanyPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> sendEmail() async {
+    final Email email = Email(
+      body: 'Email body',
+      subject: 'Email subject',
+      recipients: ['test@test.com'],
+      cc: ['m.hegazy94@hotmail.com'],
+    );
+
+    try {
+      await FlutterEmailSender.send(email);
+    } catch (error) {
+      print(error.toString());
+    }
   }
 }
 

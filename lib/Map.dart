@@ -4,6 +4,7 @@ import 'package:heave/CompanyPopup.dart';
 import 'package:heave/MapInterface.dart';
 import 'package:heave/blocs/company_bloc/bloc.dart';
 import 'package:heave/blocs/company_popup/bloc.dart';
+import 'package:heave/intro/Animals.dart';
 import 'package:latlong/latlong.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:heave/blocs/login_bloc/bloc.dart';
 import 'package:heave/blocs/authentication_bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:floating_action_row/floating_action_row.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Map extends StatefulWidget {
   static const String route = 'map_controller_animated';
@@ -61,9 +63,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
         .animate(controller);
   }
 
-  void _getUserLocation() async {
-
-  }
+  void _getUserLocation() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -266,46 +266,23 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                   }
                                 },
                               ),
+                              FloatingActionRowDivider(color: Colors.blueGrey),
+                              FloatingActionRowButton(
+                                icon: Icon(Icons.help_outline,
+                                    color: Colors.blueGrey),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          duration: Duration(milliseconds: 400),
+                                          type: PageTransitionType.fade,
+                                          child: AnimalsIntro()));
+                                },
+                              ),
                             ],
                             color: Colors.white,
                             elevation: 4,
                           )),
-                      // Positioned(
-                      //     bottom: 30,
-                      //     right: 20,
-                      //     child: FloatingActionButton(
-                      //       heroTag: "add",
-                      //       elevation: 3,
-                      //       backgroundColor: Colors.white,
-                      //       onPressed: () async {
-                      //         if (widget.user != null) {
-                      //           companyFormAlert(context).show();
-                      //         } else {
-                      //           loginAlert(context, 'company').show();
-                      //         }
-                      //       },
-                      //       child: Icon(
-                      //         Icons.add,
-                      //         color: Colors.blueGrey,
-                      //       ),
-                      //     )),
-                      // Positioned(
-                      //     bottom: 100,
-                      //     right: 20,
-                      //     child: FloatingActionButton(
-                      //       heroTag: "disconnect",
-                      //       elevation: 3,
-                      //       backgroundColor: Colors.white,
-                      //       onPressed: () {
-                      //         widget.user != null
-                      //             ? _open()
-                      //             : loginAlert(context, 'profile').show();
-                      //       },
-                      //       child: Icon(
-                      //         Icons.person,
-                      //         color: Colors.blueGrey,
-                      //       ),
-                      //     )),
                     ],
                   );
                 })));

@@ -176,7 +176,7 @@ class NewsList extends StatelessWidget {
                     color: Colors.blueGrey,
                     size: 25.0,
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => Container(),
                 ),
               ),
             );
