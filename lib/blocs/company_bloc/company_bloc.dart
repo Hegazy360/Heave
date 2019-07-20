@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bloc/bloc.dart';
 import 'package:latlong/latlong.dart';
 import './bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   @override
@@ -29,12 +30,21 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     QuerySnapshot companiesSnapshotCache = await Firestore.instance
         .collection('companies')
         .getDocuments(source: Source.cache);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     var companiesList;
     var companies = [];
 
-    if (companiesSnapshotCache.documents.length > 0) {
-      print("CACHE FOUND");
+    String cacheDate = prefs.getString('cacheDate');
+    String today = DateTime.now().toString();
+    int lastCacheDaysDifference = DateTime.parse(today)
+        .difference(DateTime.parse(cacheDate ?? today))
+        .inDays;
+
+    if (companiesSnapshotCache.documents.length > 0 &&
+        lastCacheDaysDifference < 1) {
+      print(
+          "CACHE FOUND AND IS $lastCacheDaysDifference days old, fresh, can be used");
       companiesList = companiesSnapshotCache.documents;
     } else {
       print("NO CACHE FOUND");
@@ -42,6 +52,11 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       QuerySnapshot companiesSnapshot =
           await Firestore.instance.collection('companies').getDocuments();
       companiesList = companiesSnapshot.documents;
+      if (lastCacheDaysDifference > 1 || cacheDate == null) {
+        print('updating cache date');
+        String newCacheDate = DateTime.now().toString();
+        await prefs.setString('cacheDate', newCacheDate.toString());
+      }
     }
 
     companiesList.forEach((company) {

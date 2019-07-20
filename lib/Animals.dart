@@ -43,43 +43,46 @@ class _AnimalsState extends State<Animals> {
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
                       onTap: () => {},
-                      child: Card(
-                          color: colors[state.animals[index]['level']],
-                          child: Card(
-                              child: Column(
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.all(15),
-                                    width: MediaQuery.of(context).size.width *
-                                        2 /
-                                        3,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          state.animals[index]['name'],
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(top: 5.0),
-                                          child: Text(
-                                              state.animals[index]['status'] ??
-                                                  'Stable',
-                                              style: TextStyle(
-                                                  color: colors[state
-                                                      .animals[index]['level']],
-                                                  fontWeight: FontWeight.bold)),
-                                        )
-                                      ],
+                      child: Container(
+                        height: 136,
+                        child: Card(
+                            color: colors[state.animals[index]['level']],
+                            child: Card(
+                                child: Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      padding: EdgeInsets.all(15),
+                                      width: MediaQuery.of(context).size.width *
+                                          2 /
+                                          3,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            state.animals[index]['name'],
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 5.0),
+                                            child: Text(
+                                                state.animals[index]
+                                                        ['status'] ??
+                                                    'Stable',
+                                                style: TextStyle(
+                                                    color: colors[
+                                                        state.animals[index]
+                                                            ['level']],
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(right: 5.0),
+                                    Expanded(
                                       child: CachedNetworkImage(
                                         placeholder: (context, url) =>
                                             SpinKitPulse(
@@ -94,11 +97,11 @@ class _AnimalsState extends State<Animals> {
                                         fadeInDuration: Duration(seconds: 1),
                                       ),
                                     ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ))),
+                                  ],
+                                ),
+                              ],
+                            ))),
+                      ),
                     );
                   });
             if (state is AnimalsUninitialized)

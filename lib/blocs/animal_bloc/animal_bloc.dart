@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import './bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AnimalBloc extends Bloc<AnimalEvent, AnimalState> {
   @override
@@ -29,10 +30,16 @@ class AnimalBloc extends Bloc<AnimalEvent, AnimalState> {
         .collection('animals')
         .orderBy("level", descending: true)
         .getDocuments(source: Source.cache);
-
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     var animalsList;
+    String cacheDate = prefs.getString('cacheDate');
+    String today = DateTime.now().toString();
+    int lastCacheDaysDifference = DateTime.parse(today)
+        .difference(DateTime.parse(cacheDate ?? today))
+        .inDays;
 
-    if (animalsSnapshotCache.documents.length > 0) {
+    if (animalsSnapshotCache.documents.length > 0 &&
+        lastCacheDaysDifference < 1) {
       print("CACHE FOUND");
       animalsList = animalsSnapshotCache.documents;
     } else {
@@ -43,6 +50,11 @@ class AnimalBloc extends Bloc<AnimalEvent, AnimalState> {
           .orderBy("level", descending: true)
           .getDocuments();
       animalsList = companiesSnapshot.documents;
+      if (lastCacheDaysDifference > 1 ||cacheDate == null ) {
+        print('updating cache date');
+        String newCacheDate = DateTime.now().toString();
+        await prefs.setString('cacheDate', newCacheDate.toString());
+      }
     }
 
     return animalsList;

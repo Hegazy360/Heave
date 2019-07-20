@@ -120,7 +120,7 @@ class NewsList extends StatelessWidget {
                                       padding:
                                           const EdgeInsets.only(bottom: 8.0),
                                       child: Text(
-                                        newsList[index]['title'],
+                                        newsList[index]['title']?? '',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white,
@@ -130,7 +130,7 @@ class NewsList extends StatelessWidget {
                                     Padding(
                                       padding: EdgeInsets.only(top: 5.0),
                                       child: Text(
-                                        newsList[index]['description'],
+                                        newsList[index]['description']?? '',
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -160,7 +160,7 @@ class NewsList extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.only(right: 5, bottom: 10),
                                 child: Text(
-                                  newsList[index]['source']['name'],
+                                  newsList[index]['source']['name'] ?? '',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white),
@@ -172,7 +172,7 @@ class NewsList extends StatelessWidget {
                       ),
                     ),
                   ),
-                  placeholder: (context, url) => SpinKitPulse(
+                  placeholder: (context, url) => SpinKitDualRing(
                     color: Colors.blueGrey,
                     size: 25.0,
                   ),
