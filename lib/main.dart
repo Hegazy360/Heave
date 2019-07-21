@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:heave/Map.dart';
 import 'package:heave/Pictures.dart';
 import 'package:flutter/material.dart';
@@ -83,6 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return BlocBuilder(
         bloc: BlocProvider.of<AuthenticationBloc>(context),
         builder: (BuildContext context, AuthenticationState state) {

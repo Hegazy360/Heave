@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:heave/blocs/news_bloc/bloc.dart';
 import 'package:heave/WebViewContainer.dart';
+import 'package:heave/intro/News.dart';
 import 'package:intl/intl.dart';
+import 'package:page_transition/page_transition.dart';
 
 class News extends StatefulWidget {
   News(authenticated);
@@ -55,20 +57,40 @@ class _NewsState extends State<News> {
             ),
           ),
         ),
-        body: BlocBuilder(
-            bloc: _newsBloc,
-            builder: (BuildContext context, NewsState state) {
-              if (state is NewsLoaded)
-                return TabBarView(
-                  children: [
-                    NewsList(newsList: state.climateNewsList),
-                    NewsList(newsList: state.oceanNewsList),
-                  ],
-                );
-              if (state is NewsUninitialized)
-                return Center(child: CircularProgressIndicator());
-              return Container();
-            }),
+        body: Stack(
+          children: <Widget>[
+            BlocBuilder(
+                bloc: _newsBloc,
+                builder: (BuildContext context, NewsState state) {
+                  if (state is NewsLoaded)
+                    return TabBarView(
+                      children: [
+                        NewsList(newsList: state.climateNewsList),
+                        NewsList(newsList: state.oceanNewsList),
+                      ],
+                    );
+                  if (state is NewsUninitialized)
+                    return Center(child: CircularProgressIndicator());
+                  return Container();
+                }),
+            Positioned(
+              bottom: 50,
+              right: 20,
+              child: FloatingActionButton(
+                backgroundColor: Colors.white,
+                child: Icon(Icons.help_outline, color: Colors.blueGrey),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          duration: Duration(milliseconds: 500),
+                          type: PageTransitionType.fade,
+                          child: NewsIntro()));
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -120,7 +142,7 @@ class NewsList extends StatelessWidget {
                                       padding:
                                           const EdgeInsets.only(bottom: 8.0),
                                       child: Text(
-                                        newsList[index]['title']?? '',
+                                        newsList[index]['title'] ?? '',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white,
@@ -130,7 +152,7 @@ class NewsList extends StatelessWidget {
                                     Padding(
                                       padding: EdgeInsets.only(top: 5.0),
                                       child: Text(
-                                        newsList[index]['description']?? '',
+                                        newsList[index]['description'] ?? '',
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(

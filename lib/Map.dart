@@ -4,7 +4,7 @@ import 'package:heave/CompanyPopup.dart';
 import 'package:heave/MapInterface.dart';
 import 'package:heave/blocs/company_bloc/bloc.dart';
 import 'package:heave/blocs/company_popup/bloc.dart';
-import 'package:heave/intro/Animals.dart';
+import 'package:heave/intro/Map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
@@ -274,9 +274,9 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                   Navigator.push(
                                       context,
                                       PageTransition(
-                                          duration: Duration(milliseconds: 400),
+                                          duration: Duration(milliseconds: 500),
                                           type: PageTransitionType.fade,
-                                          child: AnimalsIntro()));
+                                          child: MapIntro()));
                                 },
                               ),
                             ],
@@ -352,10 +352,6 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                   BlocProvider.of<LoginBloc>(context).dispatch(
                     LoginWithFacebookPressed(),
                   );
-                  // if (type == 'company')
-                  //   companyFormAlert(context).show();
-                  // else
-                  //   _open();
                 },
               ),
               Padding(
@@ -433,7 +429,6 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                           password: password,
                         ),
                       );
-                      // handleSignUp(email, password);
                     },
                     backgroundColor: Colors.blueGrey,
                   )),
@@ -451,10 +446,6 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                   BlocProvider.of<LoginBloc>(context).dispatch(
                     LoginWithFacebookPressed(),
                   );
-                  // if (type == 'company')
-                  //   companyFormAlert(context).show();
-                  // else
-                  //   _open();
                 },
               ),
               Padding(
