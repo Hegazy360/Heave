@@ -29,129 +29,145 @@ class CompanyPopup extends StatelessWidget {
               child: SlideTransition(
                   position: offset,
                   child: Container(
-                    padding: EdgeInsets.only(top: 30, right: 10, left: 10),
+                    padding: EdgeInsets.only(
+                        top: 30, right: 10, left: 10, bottom: 0),
                     width: MediaQuery.of(context).size.width,
-                    height: 200,
+                    height: 250,
                     child: Card(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Hero(
-                                  tag: 'company_name',
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: Text(
-                                      state.company['data']['name'],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Colors.blueGrey,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  )),
-                            ),
-                            Stack(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Hero(
-                                      tag: 'company_image',
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          child: Container(
-                                              color: Colors.white,
-                                              padding: EdgeInsets.all(5),
-                                              child: CachedNetworkImage(
-                                                placeholder: (context, url) =>
-                                                    SpinKitPulse(
-                                                  color: Colors.blueGrey,
-                                                  size: 25.0,
-                                                ),
-                                                imageUrl: state.company['data']
-                                                        ['logo_url'] ??
-                                                    'https://via.placeholder.com/140x100',
-                                                fit: BoxFit.cover,
-                                                height: 100,
-                                                width: 100,
-                                                fadeInDuration:
-                                                    Duration(seconds: 1),
-                                              ))),
-                                    ),
-                                    Expanded(
-                                      child: Hero(
-                                        tag: 'company_accusations',
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              width: 200,
-                                              child: Text(
-                                                state.company['data']
-                                                        ['accusations'][0] ??
-                                                    '',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                              )),
-                                        ),
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Hero(
+                                    tag: 'company_name',
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: Text(
+                                        state.company['data']['name'],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.blueGrey,
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w500),
                                       ),
-                                    )
-                                  ],
-                                ),
-                                Positioned(
-                                  bottom: -10,
-                                  width: 35,
-                                  right: 20,
-                                  child: RaisedButton(
-                                    elevation: 0,
-                                    color: Colors.white,
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          PageTransition(
-                                              duration:
-                                                  Duration(milliseconds: 700),
-                                              type: PageTransitionType.fade,
-                                              child:
-                                                  CompanyPage(state.company)));
-                                    },
-                                    child: Icon(
-                                      Icons.info_outline,
-                                      size: 30,
-                                      color: Colors.blueGrey,
-                                    ),
+                                    )),
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Hero(
+                                    tag: 'company_image',
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Container(
+                                            color: Colors.white,
+                                            padding: EdgeInsets.only(left: 15, right: 10, top: 10),
+                                            child: CachedNetworkImage(
+                                              placeholder: (context, url) =>
+                                                  SpinKitPulse(
+                                                color: Colors.blueGrey,
+                                                size: 25.0,
+                                              ),
+                                              imageUrl: state.company['data']
+                                                      ['logo_url'] ??
+                                                  'https://via.placeholder.com/140x100',
+                                              fit: BoxFit.cover,
+                                              height: 100,
+                                              width: 100,
+                                              fadeInDuration:
+                                                  Duration(seconds: 1),
+                                            ))),
                                   ),
-                                ),
-                                Positioned(
-                                  bottom: -10,
-                                  width: 35,
-                                  right: 60,
-                                  child: RaisedButton(
-                                      elevation: 0,
-                                      color: Colors.white,
-                                      onPressed: () {
-                                        sendEmail();
-                                      },
-                                      child: Hero(
-                                          tag: 'email_icon',
+                                  Expanded(
+                                    child: Hero(
+                                      tag: 'company_accusations',
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: Container(
+                                            padding: const EdgeInsets.all(8.0),
+                                            width: 200,
+                                            child: Text(
+                                              state.company['data']
+                                                      ['accusations'][0] ??
+                                                  '',
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w400),
+                                            )),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: Hero(
+                                        tag: 'company_level',
+                                        child: Text(
+                                          'Rank: ' + state.company['data']
+                                                      ['level'],
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
+                                        )),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      ButtonTheme(
+                                        minWidth: 0,
+                                        padding: EdgeInsets.all(0),
+                                        child: RaisedButton(
+                                            elevation: 0,
+                                            color: Colors.white,
+                                            onPressed: () {
+                                              sendEmail();
+                                            },
+                                            child: Hero(
+                                                tag: 'email_icon',
+                                                child: Icon(
+                                                  Icons.email,
+                                                  size: 30,
+                                                  color: Colors.blueGrey,
+                                                ))),
+                                      ),
+                                      ButtonTheme(
+                                        minWidth: 0,
+                                        padding: EdgeInsets.all(0),
+                                        child: RaisedButton(
+                                          elevation: 0,
+                                          color: Colors.white,
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                PageTransition(
+                                                    duration: Duration(
+                                                        milliseconds: 700),
+                                                    type:
+                                                        PageTransitionType.fade,
+                                                    child: CompanyPage(
+                                                        state.company)));
+                                          },
                                           child: Icon(
-                                            Icons.email,
+                                            Icons.info_outline,
                                             size: 30,
                                             color: Colors.blueGrey,
-                                          ))),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
+                          )),
                     ),
                   )),
             );

@@ -24,6 +24,25 @@ class CompanyPage extends StatelessWidget {
           'Sources',
           style: TextStyle(color: Colors.blueGrey),
         ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: RaisedButton(
+              color: Colors.white,
+              elevation: 0,
+              child: Hero(
+                  tag: 'email_icon',
+                  child: Icon(
+                    Icons.email,
+                    color: Colors.blueGrey,
+                    size: 30,
+                  )),
+              onPressed: () {
+                sendEmail();
+              },
+            ),
+          )
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -84,14 +103,6 @@ class CompanyPage extends StatelessWidget {
                     ))
               ],
             ),
-          ),
-          RaisedButton.icon(
-            color: Colors.white,
-            icon: Hero(tag: 'email_icon', child: Icon(Icons.email)),
-            label: Text('Send Email'),
-            onPressed: () {
-              sendEmail();
-            },
           ),
           Expanded(
             child: ListView.builder(

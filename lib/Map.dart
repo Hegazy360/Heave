@@ -204,7 +204,16 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                                           BorderRadius.circular(
                                                               50),
                                                       child: Container(
-                                                          color: Colors.white,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors.white,
+                                                            shape: BoxShape.circle,
+                                                            border: Border.all(
+                                                              color: Colors
+                                                                  .red, //                   <--- border color
+                                                              width: 1.2,
+                                                            ),
+                                                          ),
                                                           padding:
                                                               EdgeInsets.all(5),
                                                           child: Stack(
