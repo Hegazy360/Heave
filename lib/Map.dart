@@ -44,6 +44,14 @@ class MapState extends State<Map> with TickerProviderStateMixin {
   LoginBloc _loginBloc;
   CompanyBloc _companyBloc;
   CompanypopupBloc _companyPopupBloc;
+  List markerLabelColors = [
+    Colors.white,
+    Colors.yellow,
+    Colors.orange,
+    Colors.red[400],
+    Colors.red[400],
+    Colors.black
+  ];
 
   @override
   void initState() {
@@ -207,15 +215,17 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                                           decoration:
                                                               BoxDecoration(
                                                             color: Colors.white,
-                                                            shape: BoxShape.circle,
-                                                            border: Border.all(
-                                                              color: Colors
-                                                                  .red, //                   <--- border color
-                                                              width: 1.2,
+                                                            border: Border(
+                                                              bottom: BorderSide(
+                                                                  width: 5,
+                                                                  color: markerLabelColors[
+                                                                      company['data']
+                                                                          [
+                                                                          'level']]),
                                                             ),
                                                           ),
                                                           padding:
-                                                              EdgeInsets.all(5),
+                                                              EdgeInsets.all(9),
                                                           child: Stack(
                                                             children: <Widget>[
                                                               CachedNetworkImage(
@@ -246,7 +256,8 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                       }).toList()
                                     : []);
                           }),
-                      CompanyPopup(offset: offset),
+                      CompanyPopup(
+                          offset: offset, markerLabelColors: markerLabelColors),
                       Positioned(
                           bottom: 30,
                           right: 20,
@@ -292,6 +303,79 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                             color: Colors.white,
                             elevation: 4,
                           )),
+                      Positioned(
+                        bottom: 40,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            RaisedButton.icon(
+                              shape: Border(
+                                  left: BorderSide(
+                                      width: 5, color: markerLabelColors[5])),
+                              elevation: 1,
+                              color: Colors.transparent,
+                              icon: Icon(Icons.filter_5, color: Colors.white),
+                              label: Text(
+                                'Animal Abuse',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {},
+                            ),
+                            RaisedButton.icon(
+                              shape: Border(
+                                  left: BorderSide(
+                                      width: 5, color: markerLabelColors[4])),
+                              elevation: 1,
+                              color: Colors.transparent,
+                              icon: Icon(Icons.filter_4, color: Colors.white),
+                              label: Text(
+                                'Plastic Pollution',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {},
+                            ),
+                            RaisedButton.icon(
+                              shape: Border(
+                                  left: BorderSide(
+                                      width: 5, color: markerLabelColors[3])),
+                              elevation: 1,
+                              color: Colors.transparent,
+                              icon: Icon(Icons.filter_3, color: Colors.white),
+                              label: Text(
+                                'Waste',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {},
+                            ),
+                            RaisedButton.icon(
+                              shape: Border(
+                                  left: BorderSide(
+                                      width: 5, color: markerLabelColors[2])),
+                              elevation: 1,
+                              color: Colors.transparent,
+                              icon: Icon(Icons.filter_2, color: Colors.white),
+                              label: Text(
+                                'Abuse - small',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {},
+                            ),
+                            RaisedButton.icon(
+                              shape: Border(
+                                  left: BorderSide(
+                                      width: 5, color: markerLabelColors[1])),
+                              elevation: 1,
+                              color: Colors.transparent,
+                              icon: Icon(Icons.filter_1, color: Colors.white),
+                              label: Text(
+                                'Plastic - small',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {},
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   );
                 })));

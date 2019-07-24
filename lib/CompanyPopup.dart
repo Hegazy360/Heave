@@ -11,10 +11,11 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 class CompanyPopup extends StatelessWidget {
   const CompanyPopup({
     Key key,
-    @required this.offset,
+    @required this.offset, this.markerLabelColors,
   }) : super(key: key);
 
   final Animation<Offset> offset;
+  final List markerLabelColors;
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +112,10 @@ class CompanyPopup extends StatelessWidget {
                                         tag: 'company_level',
                                         child: Text(
                                           'Rank: ' + state.company['data']
-                                                      ['level'],
+                                                      ['level'].toString(),
                                           style: TextStyle(
-                                              color: Colors.red,
+                                              color: markerLabelColors[state.company['data']
+                                                      ['level']],
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16),
                                         )),
