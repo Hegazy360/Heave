@@ -49,7 +49,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
     Colors.yellow,
     Colors.orange,
     Colors.red[400],
-    Colors.red[400],
+    Colors.red[900],
     Colors.black
   ];
 
@@ -189,7 +189,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                 mapController: mapController,
                                 controller: controller,
                                 markers: state is CompanyLoaded
-                                    ? state.companies.map((company) {
+                                    ? (state.filteredCompanies.length > 1
+                                            ? state.filteredCompanies
+                                            : state.companies)
+                                        .map((company) {
                                         return Marker(
                                             width: 60.0,
                                             height: 60.0,
@@ -319,7 +322,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                 'Animal Abuse',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _companyBloc
+                                    .dispatch(SetCompaniesFilter(filter: 5));
+                              },
                             ),
                             RaisedButton.icon(
                               shape: Border(
@@ -332,7 +338,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                 'Plastic Pollution',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _companyBloc
+                                    .dispatch(SetCompaniesFilter(filter: 4));
+                              },
                             ),
                             RaisedButton.icon(
                               shape: Border(
@@ -345,7 +354,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                 'Waste',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _companyBloc
+                                    .dispatch(SetCompaniesFilter(filter: 3));
+                              },
                             ),
                             RaisedButton.icon(
                               shape: Border(
@@ -358,7 +370,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                 'Abuse - small',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _companyBloc
+                                    .dispatch(SetCompaniesFilter(filter: 2));
+                              },
                             ),
                             RaisedButton.icon(
                               shape: Border(
@@ -371,7 +386,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                 'Plastic - small',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _companyBloc
+                                    .dispatch(SetCompaniesFilter(filter: 1));
+                              },
                             ),
                           ],
                         ),

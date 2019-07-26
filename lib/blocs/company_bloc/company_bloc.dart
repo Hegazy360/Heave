@@ -17,7 +17,20 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       try {
         if (currentState is CompanyUninitialized) {
           final companies = await _fetchCompanies();
-          yield CompanyLoaded(companies);
+          yield CompanyLoaded(companies, []);
+          return;
+        }
+      } catch (_) {
+        yield CompanyError();
+      }
+    }
+    if (event is SetCompaniesFilter) {
+      try {
+        if (currentState is CompanyLoaded) {
+          var companies = (currentState as CompanyLoaded).companies;
+          var filteredCompanies = companies.where((company) => company['data']['level'] == event.filter).toList();
+
+          yield CompanyLoaded((currentState as CompanyLoaded).companies, filteredCompanies);
           return;
         }
       } catch (_) {

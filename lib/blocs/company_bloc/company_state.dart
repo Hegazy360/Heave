@@ -18,13 +18,15 @@ class CompanyError extends CompanyState {
 
 class CompanyLoaded extends CompanyState {
   final List companies;
+  final List filteredCompanies;
 
-  CompanyLoaded(this.companies) : super([companies]);
+  CompanyLoaded(this.companies, this.filteredCompanies) : super([companies, filteredCompanies]);
 
   @override
   String toString() {
-    return 'CompanyLoaded { companies: $companies }';
+    return 'CompanyLoaded { companies: $companies, filteredCompanies: $filteredCompanies }';
   }
 }
+
 
 class InitialCompanyState extends CompanyState {}
