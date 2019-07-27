@@ -18,15 +18,21 @@ class CompanyError extends CompanyState {
 
 class CompanyLoaded extends CompanyState {
   final List companies;
-  final List filteredCompanies;
+  final Map filteredCompanies;
+  final int filter;
 
-  CompanyLoaded(this.companies, this.filteredCompanies) : super([companies, filteredCompanies]);
+  CompanyLoaded(this.companies, this.filteredCompanies, this.filter)
+      : super([companies, filteredCompanies, filter]);
+
+  CompanyLoaded copyWith({List companies, Map filteredCompanies, int filter}) {
+    return CompanyLoaded(companies ?? this.companies,
+        filteredCompanies ?? this.filteredCompanies, filter ?? this.filter);
+  }
 
   @override
   String toString() {
-    return 'CompanyLoaded { companies: $companies, filteredCompanies: $filteredCompanies }';
+    return 'CompanyLoaded { companies: $companies, filteredCompanies: $filteredCompanies, filter: $filter }';
   }
 }
-
 
 class InitialCompanyState extends CompanyState {}

@@ -11,11 +11,16 @@ class FetchCompanies extends CompanyEvent {
   String toString() => 'FetchCompanies';
 }
 
-class SetCompaniesFilter extends CompanyEvent {
+class PrepareCompaniesFilters extends CompanyEvent {
+  @override
+  String toString() => 'PrepareCompaniesFilters';
+}
+
+class UpdateFilter extends CompanyEvent {
   final filter;
 
-  SetCompaniesFilter({@required this.filter}) : super([filter]);
+  UpdateFilter({@required this.filter}) : super([filter]);
   
   @override
-  String toString() => 'SetCompaniesFilter';
+  String toString() => 'UpdateFilter';
 }

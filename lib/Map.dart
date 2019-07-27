@@ -179,224 +179,227 @@ class MapState extends State<Map> with TickerProviderStateMixin {
             child: BlocBuilder(
                 bloc: _loginBloc,
                 builder: (BuildContext context, LoginState state) {
-                  return Stack(
-                    children: <Widget>[
-                      BlocBuilder(
-                          bloc: _companyBloc,
-                          builder: (BuildContext context, CompanyState state) {
-                            return MapInterface(
+                  return BlocBuilder(
+                      bloc: _companyBloc,
+                      builder: (BuildContext context, CompanyState state) {
+                        return Stack(
+                          children: <Widget>[
+                            MapInterface(
                                 position: userPosition,
                                 mapController: mapController,
                                 controller: controller,
-                                markers: state is CompanyLoaded
-                                    ? (state.filteredCompanies.length > 1
-                                            ? state.filteredCompanies
-                                            : state.companies)
-                                        .map((company) {
-                                        return Marker(
-                                            width: 60.0,
-                                            height: 60.0,
-                                            point: company['location'],
-                                            builder: (ctx) => GestureDetector(
-                                                  onTap: () {
-                                                    _companyPopupBloc.dispatch(
-                                                        SetActiveCompany(
-                                                            company: company));
-                                                    switch (controller.status) {
-                                                      case AnimationStatus
-                                                          .dismissed:
-                                                        controller.forward();
-                                                        break;
-                                                      default:
-                                                    }
-                                                  },
-                                                  child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              50),
-                                                      child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            border: Border(
-                                                              bottom: BorderSide(
-                                                                  width: 5,
-                                                                  color: markerLabelColors[
-                                                                      company['data']
-                                                                          [
-                                                                          'level']]),
-                                                            ),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.all(9),
-                                                          child: Stack(
-                                                            children: <Widget>[
-                                                              CachedNetworkImage(
-                                                                placeholder: (context,
-                                                                        url) =>
-                                                                    SpinKitPulse(
-                                                                  color: Colors
-                                                                      .blueGrey,
-                                                                  size: 25.0,
-                                                                ),
-                                                                imageUrl: company[
-                                                                            'data']
-                                                                        [
-                                                                        'logo_url'] ??
-                                                                    'https://via.placeholder.com/140x100',
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                width: 100,
-                                                                height: 100,
-                                                                fadeInDuration:
-                                                                    Duration(
-                                                                        seconds:
-                                                                            1),
-                                                              )
-                                                            ],
-                                                          ))),
-                                                ));
-                                      }).toList()
-                                    : []);
-                          }),
-                      CompanyPopup(
-                          offset: offset, markerLabelColors: markerLabelColors),
-                      Positioned(
-                          bottom: 30,
-                          right: 20,
-                          child: FloatingActionRow(
-                            axis: Axis.vertical,
-                            children: [
-                              FloatingActionRowButton(
-                                icon: Icon(
-                                  Icons.person,
-                                  color: Colors.blueGrey,
-                                ),
-                                onTap: () {
-                                  widget.user != null
-                                      ? _open()
-                                      : loginAlert(context, 'profile').show();
-                                },
+                                markers: buildMapMarkers(state).toList()),
+                            state is CompanyUninitialized
+                                ? Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : Container(),
+                            CompanyPopup(
+                                offset: offset,
+                                markerLabelColors: markerLabelColors),
+                            Positioned(
+                                bottom: 30,
+                                right: 20,
+                                child: FloatingActionRow(
+                                  axis: Axis.vertical,
+                                  children: [
+                                    FloatingActionRowButton(
+                                      icon: Icon(
+                                        Icons.person,
+                                        color: Colors.blueGrey,
+                                      ),
+                                      onTap: () {
+                                        widget.user != null
+                                            ? _open()
+                                            : loginAlert(context, 'profile')
+                                                .show();
+                                      },
+                                    ),
+                                    FloatingActionRowDivider(
+                                        color: Colors.blueGrey),
+                                    FloatingActionRowButton(
+                                      icon: Icon(Icons.add,
+                                          color: Colors.blueGrey),
+                                      onTap: () {
+                                        if (widget.user != null) {
+                                          companyFormAlert(context).show();
+                                        } else {
+                                          loginAlert(context, 'company').show();
+                                        }
+                                      },
+                                    ),
+                                    FloatingActionRowDivider(
+                                        color: Colors.blueGrey),
+                                    FloatingActionRowButton(
+                                      icon: Icon(Icons.help_outline,
+                                          color: Colors.blueGrey),
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            PageTransition(
+                                                duration:
+                                                    Duration(milliseconds: 500),
+                                                type: PageTransitionType.fade,
+                                                child: MapIntro()));
+                                      },
+                                    ),
+                                  ],
+                                  color: Colors.white,
+                                  elevation: 4,
+                                )),
+                            Positioned(
+                              bottom: 40,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: buildFilterButtons(state),
                               ),
-                              FloatingActionRowDivider(color: Colors.blueGrey),
-                              FloatingActionRowButton(
-                                icon: Icon(Icons.add, color: Colors.blueGrey),
-                                onTap: () {
-                                  if (widget.user != null) {
-                                    companyFormAlert(context).show();
-                                  } else {
-                                    loginAlert(context, 'company').show();
-                                  }
-                                },
-                              ),
-                              FloatingActionRowDivider(color: Colors.blueGrey),
-                              FloatingActionRowButton(
-                                icon: Icon(Icons.help_outline,
-                                    color: Colors.blueGrey),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      PageTransition(
-                                          duration: Duration(milliseconds: 500),
-                                          type: PageTransitionType.fade,
-                                          child: MapIntro()));
-                                },
-                              ),
-                            ],
-                            color: Colors.white,
-                            elevation: 4,
-                          )),
-                      Positioned(
-                        bottom: 40,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            RaisedButton.icon(
-                              shape: Border(
-                                  left: BorderSide(
-                                      width: 5, color: markerLabelColors[5])),
-                              elevation: 1,
-                              color: Colors.transparent,
-                              icon: Icon(Icons.filter_5, color: Colors.white),
-                              label: Text(
-                                'Animal Abuse',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () {
-                                _companyBloc
-                                    .dispatch(SetCompaniesFilter(filter: 5));
-                              },
-                            ),
-                            RaisedButton.icon(
-                              shape: Border(
-                                  left: BorderSide(
-                                      width: 5, color: markerLabelColors[4])),
-                              elevation: 1,
-                              color: Colors.transparent,
-                              icon: Icon(Icons.filter_4, color: Colors.white),
-                              label: Text(
-                                'Plastic Pollution',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () {
-                                _companyBloc
-                                    .dispatch(SetCompaniesFilter(filter: 4));
-                              },
-                            ),
-                            RaisedButton.icon(
-                              shape: Border(
-                                  left: BorderSide(
-                                      width: 5, color: markerLabelColors[3])),
-                              elevation: 1,
-                              color: Colors.transparent,
-                              icon: Icon(Icons.filter_3, color: Colors.white),
-                              label: Text(
-                                'Waste',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () {
-                                _companyBloc
-                                    .dispatch(SetCompaniesFilter(filter: 3));
-                              },
-                            ),
-                            RaisedButton.icon(
-                              shape: Border(
-                                  left: BorderSide(
-                                      width: 5, color: markerLabelColors[2])),
-                              elevation: 1,
-                              color: Colors.transparent,
-                              icon: Icon(Icons.filter_2, color: Colors.white),
-                              label: Text(
-                                'Abuse - small',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () {
-                                _companyBloc
-                                    .dispatch(SetCompaniesFilter(filter: 2));
-                              },
-                            ),
-                            RaisedButton.icon(
-                              shape: Border(
-                                  left: BorderSide(
-                                      width: 5, color: markerLabelColors[1])),
-                              elevation: 1,
-                              color: Colors.transparent,
-                              icon: Icon(Icons.filter_1, color: Colors.white),
-                              label: Text(
-                                'Plastic - small',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () {
-                                _companyBloc
-                                    .dispatch(SetCompaniesFilter(filter: 1));
-                              },
                             ),
                           ],
-                        ),
-                      ),
-                    ],
-                  );
+                        );
+                      });
                 })));
+  }
+
+  List<Widget> buildFilterButtons(CompanyState state) {
+    int filter = state is CompanyLoaded ? state.filter : -1;
+
+    return <Widget>[
+      RaisedButton.icon(
+        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[5])),
+        elevation: 1,
+        color: filter == 5 ? Colors.black38 : Colors.transparent,
+        icon: Icon(Icons.filter_5, color: Colors.white),
+        label: Container(
+          width: 115,
+          child: Text(
+            'Animal Abuse',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        onPressed: () {
+          _companyBloc.dispatch(UpdateFilter(filter: filter == 5 ? -1 : 5));
+        },
+      ),
+      RaisedButton.icon(
+        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[4])),
+        elevation: 1,
+        color: filter == 4 ? Colors.black38 : Colors.transparent,
+        icon: Icon(Icons.filter_4, color: Colors.white),
+        label: Container(
+          width: 115,
+          child: Text(
+            'Plastic Pollution',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        onPressed: () {
+          _companyBloc.dispatch(UpdateFilter(filter: filter == 4 ? -1 : 4));
+        },
+      ),
+      RaisedButton.icon(
+        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[3])),
+        elevation: 1,
+        color: filter == 3 ? Colors.black38 : Colors.transparent,
+        icon: Icon(Icons.filter_3, color: Colors.white),
+        label: Container(
+          width: 115,
+          child: Text(
+            'Waste',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        onPressed: () {
+          _companyBloc.dispatch(UpdateFilter(filter: filter == 3 ? -1 : 3));
+        },
+      ),
+      RaisedButton.icon(
+        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[2])),
+        elevation: 1,
+        color: filter == 2 ? Colors.black38 : Colors.transparent,
+        icon: Icon(Icons.filter_2, color: Colors.white),
+        label: Container(
+          width: 115,
+          child: Text(
+            'Abuse - small',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        onPressed: () {
+          _companyBloc.dispatch(UpdateFilter(filter: filter == 2 ? -1 : 2));
+        },
+      ),
+      RaisedButton.icon(
+        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[1])),
+        elevation: 1,
+        color: filter == 1 ? Colors.black38 : Colors.transparent,
+        icon: Icon(Icons.filter_1, color: Colors.white),
+        label: Container(
+          width: 115,
+          child: Text(
+            'Plastic - small',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        onPressed: () {
+          _companyBloc.dispatch(UpdateFilter(filter: filter == 1 ? -1 : 1));
+        },
+      ),
+    ];
+  }
+
+  Iterable<Marker> buildMapMarkers(CompanyState state) {
+    if (state is CompanyLoaded) {
+      List filteredList = state.filteredCompanies[state.filter.toString()];
+      return (state.filter == -1 ? state.companies : filteredList)
+          .map((company) {
+        return Marker(
+            width: 60.0,
+            height: 60.0,
+            point: company['location'],
+            builder: (ctx) => GestureDetector(
+                  onTap: () {
+                    _companyPopupBloc
+                        .dispatch(SetActiveCompany(company: company));
+                    switch (controller.status) {
+                      case AnimationStatus.dismissed:
+                        controller.forward();
+                        break;
+                      default:
+                    }
+                  },
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                              bottom: BorderSide(
+                                  width: 5,
+                                  color: markerLabelColors[company['data']
+                                      ['level']]),
+                            ),
+                          ),
+                          padding: EdgeInsets.all(9),
+                          child: Stack(
+                            children: <Widget>[
+                              CachedNetworkImage(
+                                placeholder: (context, url) => SpinKitPulse(
+                                  color: Colors.blueGrey,
+                                  size: 25.0,
+                                ),
+                                imageUrl: company['data']['logo_url'] ??
+                                    'https://via.placeholder.com/140x100',
+                                fit: BoxFit.cover,
+                                width: 100,
+                                height: 100,
+                                fadeInDuration: Duration(seconds: 1),
+                              )
+                            ],
+                          ))),
+                ));
+      });
+    }
+    return [];
   }
 
   Alert loginAlert(BuildContext context, type) {

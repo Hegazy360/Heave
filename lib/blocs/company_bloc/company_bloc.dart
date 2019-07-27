@@ -17,25 +17,39 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       try {
         if (currentState is CompanyUninitialized) {
           final companies = await _fetchCompanies();
-          yield CompanyLoaded(companies, []);
+          yield CompanyLoaded(companies, {}, -1);
+          dispatch(PrepareCompaniesFilters());
           return;
         }
       } catch (_) {
         yield CompanyError();
       }
     }
-    if (event is SetCompaniesFilter) {
+    if (event is PrepareCompaniesFilters) {
       try {
         if (currentState is CompanyLoaded) {
           var companies = (currentState as CompanyLoaded).companies;
-          var filteredCompanies = companies.where((company) => company['data']['level'] == event.filter).toList();
-
-          yield CompanyLoaded((currentState as CompanyLoaded).companies, filteredCompanies);
+          var filteredCompanies = {};
+          for (var i = 1; i < 6; i++) {
+            filteredCompanies.addAll({
+              i.toString(): companies
+                  .where((company) => company['data']['level'] == i)
+                  .toList()
+            });
+          }
+          yield CompanyLoaded(
+              (currentState as CompanyLoaded).companies, filteredCompanies, -1);
           return;
         }
       } catch (_) {
         yield CompanyError();
       }
+    }
+    if (event is UpdateFilter) {
+      if (currentState is CompanyLoaded) {
+        yield (currentState as CompanyLoaded).copyWith(filter: event.filter);
+      }
+      return;
     }
   }
 

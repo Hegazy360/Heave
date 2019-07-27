@@ -11,7 +11,8 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 class CompanyPopup extends StatelessWidget {
   const CompanyPopup({
     Key key,
-    @required this.offset, this.markerLabelColors,
+    @required this.offset,
+    this.markerLabelColors,
   }) : super(key: key);
 
   final Animation<Offset> offset;
@@ -64,7 +65,8 @@ class CompanyPopup extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(50),
                                         child: Container(
                                             color: Colors.white,
-                                            padding: EdgeInsets.only(left: 15, right: 10, top: 10),
+                                            padding: EdgeInsets.only(
+                                                left: 15, right: 10, top: 10),
                                             child: CachedNetworkImage(
                                               placeholder: (context, url) =>
                                                   SpinKitPulse(
@@ -111,11 +113,12 @@ class CompanyPopup extends StatelessWidget {
                                     child: Hero(
                                         tag: 'company_level',
                                         child: Text(
-                                          'Rank: ' + state.company['data']
-                                                      ['level'].toString(),
+                                          'Rank: ' +
+                                              state.company['data']['level']
+                                                  .toString(),
                                           style: TextStyle(
-                                              color: markerLabelColors[state.company['data']
-                                                      ['level']],
+                                              color: markerLabelColors[state
+                                                  .company['data']['level']],
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16),
                                         )),
@@ -130,7 +133,11 @@ class CompanyPopup extends StatelessWidget {
                                             elevation: 0,
                                             color: Colors.white,
                                             onPressed: () {
-                                              sendEmail();
+                                              if (state.company['data']
+                                                      ['emails'] !=
+                                                  null) {
+                                                sendEmail(state.company);
+                                              }
                                             },
                                             child: Hero(
                                                 tag: 'email_icon',
@@ -178,11 +185,12 @@ class CompanyPopup extends StatelessWidget {
         });
   }
 
-  Future<void> sendEmail() async {
+  Future<void> sendEmail(company) async {
+    List<String> emails = company['data']['emails'].cast<String>();
     final Email email = Email(
       body: 'Email body',
       subject: 'Email subject',
-      recipients: ['test@test.com'],
+      recipients: emails,
       cc: ['m.hegazy94@hotmail.com'],
     );
 

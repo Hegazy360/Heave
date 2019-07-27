@@ -14,7 +14,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.3.0"
   bloc:
     dependency: "direct main"
     description:
@@ -28,7 +28,7 @@ packages:
       name: boolean_selector
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
   cached_network_image:
     dependency: transitive
     description:
@@ -49,7 +49,7 @@ packages:
       name: cloud_firestore
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.7"
+    version: "0.12.7+1"
   collection:
     dependency: transitive
     description:
@@ -91,7 +91,7 @@ packages:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.6"
+    version: "0.3.0"
   fancy_bottom_navigation:
     dependency: "direct main"
     description:
@@ -105,7 +105,7 @@ packages:
       name: firebase_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.11.1+11"
+    version: "0.11.1+12"
   firebase_core:
     dependency: transitive
     description:
@@ -138,7 +138,7 @@ packages:
       name: flutter_bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.19.1"
+    version: "0.20.0"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -173,7 +173,7 @@ packages:
       name: flutter_inner_drawer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.9"
+    version: "0.3.0"
   flutter_map:
     dependency: "direct main"
     description:
@@ -290,7 +290,7 @@ packages:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.6"
+    version: "1.1.7"
   page_transition:
     dependency: "direct main"
     description:
@@ -318,7 +318,7 @@ packages:
       name: pedantic
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.0"
+    version: "1.8.0+1"
   positioned_tap_detector:
     dependency: transitive
     description:
@@ -477,7 +477,7 @@ packages:
       name: webview_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.10+3"
+    version: "0.3.10+4"
   youtube_player:
     dependency: "direct main"
     description:
