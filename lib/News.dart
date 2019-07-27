@@ -113,92 +113,107 @@ class NewsList extends StatelessWidget {
             return GestureDetector(
               onTap: () => _handleURLButtonPress(
                   context, newsList[index]['url'], newsList[index]['title']),
-              child: Card(
-                child: CachedNetworkImage(
-                  imageUrl: newsList[index]['urlToImage'] != null &&
-                          newsList[index]['urlToImage'].isNotEmpty
-                      ? newsList[index]['urlToImage']
-                      : 'https://via.placeholder.com/140x100',
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: 100.0,
+                ),
+                child: Card(
+                  child: CachedNetworkImage(
+                    imageUrl: newsList[index]['urlToImage'] != null &&
+                            newsList[index]['urlToImage'].isNotEmpty
+                        ? newsList[index]['urlToImage']
+                        : 'https://via.placeholder.com/140x100',
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                    child: Container(
-                      color: Colors.black.withOpacity(0.7),
-                      child: Column(
-                        children: <Widget>[
-                          Wrap(
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.all(15),
-                                width: MediaQuery.of(context).size.width,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 8.0),
-                                      child: Text(
-                                        newsList[index]['title'] ?? '',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            fontSize: 16),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.7),
+                        child: Column(
+                          children: <Widget>[
+                            Wrap(
+                              children: <Widget>[
+                                Container(
+                                  padding: EdgeInsets.all(15),
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8.0),
+                                        child: Text(
+                                          newsList[index]['title'] ?? '',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              fontSize: 16),
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 5.0),
-                                      child: Text(
-                                        newsList[index]['description'] ?? '',
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    )
-                                  ],
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 5.0),
+                                        child: Text(
+                                          newsList[index]['description'] ?? '',
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(left: 15, bottom: 10),
-                                child: Text(
-                                    DateFormat.yMMMd().format(DateTime.parse(
-                                        newsList[index]['publishedAt'])),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 15, bottom: 10),
+                                  child: Text(
+                                      DateFormat.yMMMd().format(DateTime.parse(
+                                          newsList[index]['publishedAt'])),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(right: 5, bottom: 10),
+                                  child: Text(
+                                    newsList[index]['source']['name'] ?? '',
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(right: 5, bottom: 10),
-                                child: Text(
-                                  newsList[index]['source']['name'] ?? '',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                        color: Colors.white),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) => SpinKitPulse(
+                      color: Colors.blueGrey,
+                      size: 25.0,
+                    ),
+                    errorWidget: (context, url, error) => Center(
+                      child: Column(
+                        children: <Widget>[
+                          Icon(Icons.sentiment_very_dissatisfied, size: 30,),
+                          Text("Something went wrong.")
                         ],
                       ),
                     ),
                   ),
-                  placeholder: (context, url) => SpinKitDualRing(
-                    color: Colors.blueGrey,
-                    size: 25.0,
-                  ),
-                  errorWidget: (context, url, error) => Container(),
                 ),
               ),
             );

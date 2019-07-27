@@ -52,6 +52,7 @@ class _AnimalsState extends State<Animals> {
                               color: colors[state.animals[index]['level']],
                               child: Card(
                                   child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[

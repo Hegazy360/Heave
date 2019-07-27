@@ -37,15 +37,20 @@ class _PicturesState extends State<Pictures> {
                     itemCount: state.pictures.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
-                          child: CachedNetworkImage(
-                        placeholder: (context, url) => SpinKitPulse(
-                          color: Colors.blueGrey,
-                          size: 25.0,
+                          child: ConstrainedBox(
+                        constraints: new BoxConstraints(
+                          minHeight: 150.0,
                         ),
-                        imageUrl: state.pictures[index]['url'] ??
-                            'https://via.placeholder.com/140x100',
-                        fit: BoxFit.cover,
-                        fadeInDuration: Duration(seconds: 1),
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) => SpinKitPulse(
+                            color: Colors.blueGrey,
+                            size: 25.0,
+                          ),
+                          imageUrl: state.pictures[index]['url'] ??
+                              'https://via.placeholder.com/140x100',
+                          fit: BoxFit.cover,
+                          fadeInDuration: Duration(seconds: 1),
+                        ),
                       ));
                     });
               if (state is PicturesUninitialized)
