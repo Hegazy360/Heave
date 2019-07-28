@@ -86,7 +86,6 @@ class _UserProfileState extends State<UserProfile> {
                               ),
                               Expanded(
                                 child: ListView.builder(
-                                  reverse: true,
                                   padding: EdgeInsets.only(
                                       top: 10, bottom: 10, left: 20, right: 20),
                                   scrollDirection: Axis.vertical,
@@ -96,7 +95,12 @@ class _UserProfileState extends State<UserProfile> {
                                       : 0,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return state.user['data']['reports'][index]
+                                    final reversedIndex =
+                                        state.user['data']['reports'].length -
+                                            index -
+                                            1;
+                                    return state.user['data']['reports']
+                                                    [reversedIndex]
                                                 ['company_name'] !=
                                             null
                                         ? Padding(
@@ -110,7 +114,8 @@ class _UserProfileState extends State<UserProfile> {
                                                 Text(
                                                   'Reported ' +
                                                       state.user['data']
-                                                              ['reports'][index]
+                                                                  ['reports']
+                                                              [reversedIndex]
                                                           ['company_name'],
                                                   style: TextStyle(
                                                       fontSize: 14,
@@ -118,13 +123,16 @@ class _UserProfileState extends State<UserProfile> {
                                                           FontWeight.w400),
                                                 ),
                                                 Text(
-                                                  state.user['data']['reports']
-                                                                      [index][
+                                                  state.user['data']['reports'][
+                                                                      reversedIndex]
+                                                                  [
                                                                   'approved'] !=
                                                               null &&
-                                                          state.user['data']
-                                                                  ['reports'][
-                                                              index]['approved']
+                                                          state.user['data'][
+                                                                      'reports']
+                                                                  [
+                                                                  reversedIndex]
+                                                              ['approved']
                                                       ? 'Approved'
                                                       : 'Pending',
                                                   style: TextStyle(
@@ -132,13 +140,13 @@ class _UserProfileState extends State<UserProfile> {
                                                           FontWeight.w500,
                                                       color: state.user['data'][
                                                                               'reports']
-                                                                          [index]
+                                                                          [reversedIndex]
                                                                       [
                                                                       'approved'] !=
                                                                   null &&
                                                               state.user['data']
                                                                           ['reports']
-                                                                      [index]
+                                                                      [reversedIndex]
                                                                   ['approved']
                                                           ? Colors.green
                                                           : Colors.orange),

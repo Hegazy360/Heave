@@ -43,7 +43,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     } else {
       print("NO CACHE FOUND");
       final climateNews = await http.get(
-          "https://newsapi.org/v2/everything?q=global+warming&sortBy=publishedAt&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
+          "https://newsapi.org/v2/everything?q=%22Global%20warming%22%20AND%20%22Climate%20Change%22&language=en&sortBy=popularity&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
       news = json.decode(climateNews.body)['articles'] as List;
       await prefs.setString('climateNews', climateNews.body);
       if (lastCacheDaysDifference > 1 || cacheDate == null) {
@@ -69,7 +69,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     } else {
       print("NO CACHE FOUND");
       final oceanNews = await http.get(
-          "https://newsapi.org/v2/everything?q=ocean+pollution+plastic&sortBy=publishedAt&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
+          "https://newsapi.org/v2/everything?q=%22Plastic%20Pollution%22&language=en&sortBy=popularity&apiKey=fcd8f6cd8c2a4eebb48c9bd9de8e3dae");
       news = json.decode(oceanNews.body)['articles'] as List;
       await prefs.setString('oceanNews', oceanNews.body);
       if (lastCacheDaysDifference > 1 || cacheDate == null) {

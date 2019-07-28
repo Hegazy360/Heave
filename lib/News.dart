@@ -45,13 +45,13 @@ class _NewsState extends State<News> {
                 Tab(
                   icon: Icon(Icons.wb_sunny),
                   child: Container(
-                    child: Text('Climate'),
+                    child: Text('Climate Change'),
                   ),
                 ),
                 Tab(
                     icon: Icon(Icons.directions_boat),
                     child: Container(
-                      child: Text('Ocean'),
+                      child: Text('Plastic Pollution'),
                     )),
               ],
             ),
@@ -131,7 +131,7 @@ class NewsList extends StatelessWidget {
                         ),
                       ),
                       child: Container(
-                        color: Colors.black.withOpacity(0.7),
+                        color: Colors.grey[900].withOpacity(0.55),
                         child: Column(
                           children: <Widget>[
                             Wrap(
