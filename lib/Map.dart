@@ -267,10 +267,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       RaisedButton.icon(
         shape: Border(left: BorderSide(width: 5, color: markerLabelColors[5])),
         elevation: 1,
-        color: filter == 5 ? Colors.black38 : Colors.transparent,
+        color: filter == 5 ? Colors.black38 : Colors.black12,
         icon: Icon(Icons.filter_5, color: Colors.white),
         label: Container(
-          width: 115,
+          width: 140,
           child: Text(
             'Animal Abuse',
             style: TextStyle(color: Colors.white),
@@ -283,10 +283,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       RaisedButton.icon(
         shape: Border(left: BorderSide(width: 5, color: markerLabelColors[4])),
         elevation: 1,
-        color: filter == 4 ? Colors.black38 : Colors.transparent,
+        color: filter == 4 ? Colors.black38 : Colors.black12,
         icon: Icon(Icons.filter_4, color: Colors.white),
         label: Container(
-          width: 115,
+          width: 140,
           child: Text(
             'Plastic Pollution',
             style: TextStyle(color: Colors.white),
@@ -299,12 +299,12 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       RaisedButton.icon(
         shape: Border(left: BorderSide(width: 5, color: markerLabelColors[3])),
         elevation: 1,
-        color: filter == 3 ? Colors.black38 : Colors.transparent,
+        color: filter == 3 ? Colors.black38 : Colors.black12,
         icon: Icon(Icons.filter_3, color: Colors.white),
         label: Container(
-          width: 115,
+          width: 140,
           child: Text(
-            'Waste',
+            'Working Conditions',
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -315,10 +315,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       RaisedButton.icon(
         shape: Border(left: BorderSide(width: 5, color: markerLabelColors[2])),
         elevation: 1,
-        color: filter == 2 ? Colors.black38 : Colors.transparent,
+        color: filter == 2 ? Colors.black38 : Colors.black12,
         icon: Icon(Icons.filter_2, color: Colors.white),
         label: Container(
-          width: 115,
+          width: 140,
           child: Text(
             'Abuse - small',
             style: TextStyle(color: Colors.white),
@@ -331,10 +331,10 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       RaisedButton.icon(
         shape: Border(left: BorderSide(width: 5, color: markerLabelColors[1])),
         elevation: 1,
-        color: filter == 1 ? Colors.black38 : Colors.transparent,
+        color: filter == 1 ? Colors.black38 : Colors.black12,
         icon: Icon(Icons.filter_1, color: Colors.white),
         label: Container(
-          width: 115,
+          width: 140,
           child: Text(
             'Plastic - small',
             style: TextStyle(color: Colors.white),
