@@ -105,7 +105,7 @@ class CompanyPopup extends StatelessWidget {
                               ),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Hero(
                                       tag: 'company_level',
@@ -123,6 +123,7 @@ class CompanyPopup extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
                                       ButtonTheme(
+                                        padding: EdgeInsets.all(0),
                                         minWidth: 0,
                                         child: RaisedButton(
                                             elevation: 0,
@@ -143,6 +144,7 @@ class CompanyPopup extends StatelessWidget {
                                                 ))),
                                       ),
                                       ButtonTheme(
+                                        padding: EdgeInsets.all(0),
                                         minWidth: 0,
                                         child: RaisedButton(
                                           elevation: 0,

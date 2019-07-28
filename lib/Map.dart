@@ -239,7 +239,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                             PageTransition(
                                                 duration:
                                                     Duration(milliseconds: 400),
-                                                type: PageTransitionType.rightToLeft,
+                                                type: PageTransitionType.scale,
                                                 child: MapIntro()));
                                       },
                                     ),
@@ -655,7 +655,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                     Firestore firestore = Firestore.instance;
                     firestore
                         .collection("users")
-                        .document(widget.user.uid)
+                        .document(widget.user['info'].uid)
                         .get()
                         .then((ds) {
                       print('itsa mario');
@@ -667,26 +667,33 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                       var data = {
                         'company_name': companyName,
                         'accusations': accusations,
-                        'sources': sources
+                        'sources': sources,
+                        'approved': false
                       };
                       if (reportsCount == null) {
                         //first report
                         firestore
                             .collection("users")
-                            .document(widget.user.uid)
+                            .document(widget.user['info'].uid)
                             .setData({
                           'reports_count': 1,
                           'first_report_date': DateTime.now(),
                           'reports': FieldValue.arrayUnion([data]),
-                        }, merge: true);
+                        }, merge: true).then((value) {
+                          BlocProvider.of<AuthenticationBloc>(context)
+                              .dispatch(LoggedIn());
+                        });
                       } else if (reportsCount < 5)
                         firestore
                             .collection("users")
-                            .document(widget.user.uid)
+                            .document(widget.user['info'].uid)
                             .setData({
                           'reports_count': reportsCount + 1,
                           'reports': FieldValue.arrayUnion([data]),
-                        }, merge: true);
+                        }, merge: true).then((value) {
+                          BlocProvider.of<AuthenticationBloc>(context)
+                              .dispatch(LoggedIn());
+                        });
                       else {
                         var differenceInDays = DateTime.now()
                             .difference(firstReportDate.toDate())
@@ -696,12 +703,15 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                           //reset
                           firestore
                               .collection("users")
-                              .document(widget.user.uid)
+                              .document(widget.user['info'].uid)
                               .setData({
                             'reports_count': 1,
                             'first_report_date': DateTime.now(),
                             'reports': FieldValue.arrayUnion([data]),
-                          }, merge: true);
+                          }, merge: true).then((value) {
+                            BlocProvider.of<AuthenticationBloc>(context)
+                                .dispatch(LoggedIn());
+                          });
                         } else {
                           //display limit message
                           Flushbar(

@@ -51,8 +51,6 @@ class UserRepository {
     FirebaseUser currentUser = await _fAuth.currentUser();
     DocumentSnapshot userData =
         await firestore.collection("users").document(currentUser.uid).get();
-    print("OKOK");
-    print(userData.data);
     return {'info': currentUser, 'data': userData.data};
   }
 }

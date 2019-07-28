@@ -68,7 +68,7 @@ class _PicturesState extends State<Pictures> {
                     context,
                     PageTransition(
                         duration: Duration(milliseconds: 400),
-                        type: PageTransitionType.rightToLeft,
+                        type: PageTransitionType.scale,
                         child: PicturesIntro()));
               },
             )),
