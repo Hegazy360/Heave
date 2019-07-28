@@ -83,8 +83,8 @@ class _NewsState extends State<News> {
                   Navigator.push(
                       context,
                       PageTransition(
-                          duration: Duration(milliseconds: 500),
-                          type: PageTransitionType.fade,
+                          duration: Duration(milliseconds: 400),
+                          type: PageTransitionType.rightToLeft,
                           child: NewsIntro()));
                 },
               ),

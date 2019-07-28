@@ -32,17 +32,17 @@ class CompanyPopup extends StatelessWidget {
                   position: offset,
                   child: Container(
                     padding: EdgeInsets.only(
-                        top: 30, right: 10, left: 10, bottom: 0),
+                        top: 30, right: 10, left: 10),
                     width: MediaQuery.of(context).size.width,
-                    height: 250,
+                    height: 235,
                     child: Card(
+                      color: Colors.white,
                       child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.fromLTRB(23, 16, 23, 0),
                           child: Column(
                             children: <Widget>[
                               Container(
                                 width: MediaQuery.of(context).size.width,
-                                padding: const EdgeInsets.only(top: 8.0),
                                 child: Hero(
                                     tag: 'company_name',
                                     child: Material(
@@ -66,7 +66,7 @@ class CompanyPopup extends StatelessWidget {
                                         child: Container(
                                             color: Colors.white,
                                             padding: EdgeInsets.only(
-                                                left: 15, right: 10, top: 10),
+                                                right: 15),
                                             child: CachedNetworkImage(
                                               placeholder: (context, url) =>
                                                   SpinKitPulse(
@@ -89,7 +89,6 @@ class CompanyPopup extends StatelessWidget {
                                       child: Material(
                                         color: Colors.transparent,
                                         child: Container(
-                                            padding: const EdgeInsets.all(8.0),
                                             width: 200,
                                             child: Text(
                                               state.company['data']
@@ -108,27 +107,23 @@ class CompanyPopup extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Hero(
-                                        tag: 'company_level',
-                                        child: Text(
-                                          'Rank: ' +
-                                              state.company['data']['level']
-                                                  .toString(),
-                                          style: TextStyle(
-                                              color: markerLabelColors[state
-                                                  .company['data']['level']],
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
-                                        )),
-                                  ),
+                                  Hero(
+                                      tag: 'company_level',
+                                      child: Text(
+                                        'Rank: ' +
+                                            state.company['data']['level']
+                                                .toString(),
+                                        style: TextStyle(
+                                            color: markerLabelColors[state
+                                                .company['data']['level']],
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      )),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
                                       ButtonTheme(
                                         minWidth: 0,
-                                        padding: EdgeInsets.all(0),
                                         child: RaisedButton(
                                             elevation: 0,
                                             color: Colors.white,
@@ -149,7 +144,6 @@ class CompanyPopup extends StatelessWidget {
                                       ),
                                       ButtonTheme(
                                         minWidth: 0,
-                                        padding: EdgeInsets.all(0),
                                         child: RaisedButton(
                                           elevation: 0,
                                           color: Colors.white,

@@ -19,78 +19,155 @@ class _UserProfileState extends State<UserProfile> {
     return BlocBuilder(
       bloc: BlocProvider.of<AuthenticationBloc>(context),
       builder: (BuildContext context, AuthenticationState state) {
-        // if (state is Uninitialized) {
-        //   return SplashScreen();
-        // }
-        // if (state is Authenticated) {
-        //   return HomeScreen(name: state.displayName);
-        // }
-        return Container(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(20.0),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: CachedNetworkImage(
-                      placeholder: (context, url) => SpinKitPulse(
-                            color: Colors.blueGrey,
-                            size: 25.0,
-                          ),
-                      imageUrl: state is Authenticated
-                          ? state.user.photoUrl != null
-                              ? state.user.photoUrl + "?height=500"
-                              : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg'
-                          : 'https://via.placeholder.com/140x100',
-                      fit: BoxFit.cover,
-                      width: 150,
-                      height: 150,
-                      fadeInDuration: Duration(seconds: 1),
-                    )),
-              ),
-              Text(
-                state is Authenticated
-                    ? state.user.displayName ?? 'Batman'
-                    : '',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                textAlign: TextAlign.center,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: CachedNetworkImage(
-                      placeholder: (context, url) => SpinKitPulse(
-                            color: Colors.blueGrey,
-                            size: 25.0,
-                          ),
-                      imageUrl:
-                          'https://previews.123rf.com/images/coolvectorstock/coolvectorstock1808/coolvectorstock180803940/106920397-achievement-icon-vector-isolated-on-white-background-for-your-web-and-mobile-app-design-achievement-.jpg' ??
-                              'https://via.placeholder.com/140x100',
-                      fit: BoxFit.cover,
-                      width: 80,
-                      height: 80,
-                    )),
-              ),
-              Text(
-                'Master',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.w500),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 50.0),
-                child: FlatButton.icon(
-                  icon: Icon(Icons.exit_to_app),
-                  label: Text('Logout'),
-                  onPressed: () {
-                    BlocProvider.of<AuthenticationBloc>(context).dispatch(
-                      LoggedOut(),
-                    );
-                    widget.close();
-                  },
+        return SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height - 60,
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: CachedNetworkImage(
+                            placeholder: (context, url) => SpinKitPulse(
+                              color: Colors.blueGrey,
+                              size: 25.0,
+                            ),
+                            imageUrl: state is Authenticated
+                                ? state.user['info'].photoUrl != null
+                                    ? state.user['info'].photoUrl +
+                                        "?height=500"
+                                    : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg'
+                                : 'https://via.placeholder.com/140x100',
+                            fit: BoxFit.cover,
+                            width: 150,
+                            height: 150,
+                            fadeInDuration: Duration(seconds: 1),
+                          )),
+                    ),
+                    Text(
+                      state is Authenticated
+                          ? state.user['info'].displayName ?? 'Batman'
+                          : '',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                      textAlign: TextAlign.center,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Level: ' +
+                            (state is Authenticated &&
+                                    state.user['data'] != null
+                                ? state.user['data']['level'].toString()
+                                : ''),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: Text(
+                        'Contact and report new companies to increase your level',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w300),
+                      ),
+                    ),
+                    state is Authenticated &&
+                            state.user['data']['reports'].length > 0
+                        ? Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Column(
+                              children: <Widget>[
+                                Text('Latest Activity'),
+                                ListView.builder(
+                                  padding: EdgeInsets.all(20),
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: state.user['data'] != null
+                                      ? state.user['data']['reports'].length
+                                      : 0,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return state.user['data']['reports'][index]
+                                                ['company_name'] !=
+                                            null
+                                        ? Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Reported ' +
+                                                      state.user['data']
+                                                              ['reports'][index]
+                                                          ['company_name'],
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                Text('Pending', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.orange),)
+                                              ],
+                                            ))
+                                        : SizedBox();
+                                  },
+                                ),
+                              ],
+                            ),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.only(top: 80),
+                            child: Column(
+                              children: <Widget>[
+                                Text('Latest Activity'),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 20, bottom: 10),
+                                  child: Icon(
+                                    Icons.sentiment_dissatisfied,
+                                    size: 30,
+                                  ),
+                                ),
+                                Text("You have no activies yet"),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 20, top: 7),
+                                  child: Text(
+                                    "Start taking action to see your activities here",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                )
+                              ],
+                            ))
+                  ],
                 ),
-              ),
-            ],
+                Positioned(
+                  bottom: 10,
+                  right: 10,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 80.0),
+                    child: FlatButton.icon(
+                      icon: Icon(Icons.exit_to_app),
+                      label: Text('Logout'),
+                      onPressed: () {
+                        BlocProvider.of<AuthenticationBloc>(context).dispatch(
+                          LoggedOut(),
+                        );
+                        widget.close();
+                      },
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         );
       },

@@ -238,8 +238,8 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                             context,
                                             PageTransition(
                                                 duration:
-                                                    Duration(milliseconds: 500),
-                                                type: PageTransitionType.fade,
+                                                    Duration(milliseconds: 400),
+                                                type: PageTransitionType.rightToLeft,
                                                 child: MapIntro()));
                                       },
                                     ),

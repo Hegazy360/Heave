@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
@@ -45,7 +46,13 @@ class UserRepository {
     return currentUser != null;
   }
 
-  Future<FirebaseUser> getUser() async {
-    return (await _fAuth.currentUser());
+  Future<Map> getUser() async {
+    Firestore firestore = Firestore.instance;
+    FirebaseUser currentUser = await _fAuth.currentUser();
+    DocumentSnapshot userData =
+        await firestore.collection("users").document(currentUser.uid).get();
+    print("OKOK");
+    print(userData.data);
+    return {'info': currentUser, 'data': userData.data};
   }
 }
