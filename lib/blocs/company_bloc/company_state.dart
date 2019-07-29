@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:latlong/latlong.dart';
 
 @immutable
 abstract class CompanyState extends Equatable {
@@ -20,18 +21,26 @@ class CompanyLoaded extends CompanyState {
   final List companies;
   final Map filteredCompanies;
   final int filter;
+  final LatLng location;
 
-  CompanyLoaded(this.companies, this.filteredCompanies, this.filter)
-      : super([companies, filteredCompanies, filter]);
+  CompanyLoaded(
+      this.companies, this.filteredCompanies, this.filter, this.location)
+      : super([companies, filteredCompanies, filter, location]);
 
-  CompanyLoaded copyWith({List companies, Map filteredCompanies, int filter}) {
-    return CompanyLoaded(companies ?? this.companies,
-        filteredCompanies ?? this.filteredCompanies, filter ?? this.filter);
+  CompanyLoaded copyWith(
+      {List companies, Map filteredCompanies, int filter, LatLng location}) {
+    return CompanyLoaded(
+        companies ?? this.companies,
+        filteredCompanies ?? this.filteredCompanies,
+        filter ?? this.filter,
+        location ?? this.location);
   }
 
   @override
   String toString() {
-    return 'CompanyLoaded { companies: $companies, filteredCompanies: $filteredCompanies, filter: $filter }';
+    var companiesLength = companies.length;
+    var filteredCompaniesLength = filteredCompanies.length;
+    return 'CompanyLoaded { companies: $companiesLength, filteredCompanies: $filteredCompaniesLength, filter: $filter, location: $location }';
   }
 }
 

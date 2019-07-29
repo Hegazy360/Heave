@@ -56,6 +56,18 @@ class MapInterface extends StatelessWidget {
             'id': 'mapbox.streets',
           },
         ),
+        MarkerLayerOptions(markers: [
+          Marker(
+            point: position,
+            builder: (ctx) => Container(
+              child: Icon(
+                Icons.my_location,
+                size: 30,
+                color: Colors.blueGrey[700],
+              ),
+            ),
+          )
+        ]),
         MarkerClusterLayerOptions(
           maxClusterRadius: 50,
           height: 40,

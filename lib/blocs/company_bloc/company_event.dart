@@ -20,7 +20,16 @@ class UpdateFilter extends CompanyEvent {
   final filter;
 
   UpdateFilter({@required this.filter}) : super([filter]);
-  
+
   @override
   String toString() => 'UpdateFilter';
+}
+
+class UpdateLocation extends CompanyEvent {
+  final location;
+
+  UpdateLocation({@required this.location}) : super([location]);
+
+  @override
+  String toString() => 'UpdateLocation';
 }

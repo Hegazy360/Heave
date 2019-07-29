@@ -19,6 +19,7 @@ import 'package:heave/blocs/authentication_bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:floating_action_row/floating_action_row.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:location/location.dart';
 
 class Map extends StatefulWidget {
   static const String route = 'map_controller_animated';
@@ -39,7 +40,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
   final GlobalKey<InnerDrawerState> _innerDrawerKey =
       GlobalKey<InnerDrawerState>();
 
-  var userPosition = LatLng(45.7575136, 4.8667044);
+  var location = new Location();
 
   LoginBloc _loginBloc;
   CompanyBloc _companyBloc;
@@ -56,12 +57,13 @@ class MapState extends State<Map> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    _getUserLocation();
+
     _loginBloc = BlocProvider.of<LoginBloc>(context);
     _companyBloc = BlocProvider.of<CompanyBloc>(context);
     _companyPopupBloc = BlocProvider.of<CompanypopupBloc>(context);
     _companyBloc.dispatch(FetchCompanies());
-
-    _getUserLocation();
 
     mapController = MapController();
     controller =
@@ -71,7 +73,20 @@ class MapState extends State<Map> with TickerProviderStateMixin {
         .animate(controller);
   }
 
-  void _getUserLocation() async {}
+  void _getUserLocation() async {
+    try {
+      await location.getLocation().then((value) {
+        var currentLocation = LatLng(value.latitude, value.longitude);
+        _companyBloc.dispatch(UpdateLocation(location: currentLocation));
+      });
+    } catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        print('Permission denied');
+      }
+      _companyBloc
+          .dispatch(UpdateLocation(location: LatLng(40.7128, -74.0060)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,76 +197,99 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                   return BlocBuilder(
                       bloc: _companyBloc,
                       builder: (BuildContext context, CompanyState state) {
+                        if (state is CompanyLoaded && state.location != null) {
+                          return Stack(
+                            children: <Widget>[
+                              MapInterface(
+                                  position: state.location,
+                                  mapController: mapController,
+                                  controller: controller,
+                                  markers: buildMapMarkers(state).toList()),
+                              CompanyPopup(
+                                  offset: offset,
+                                  markerLabelColors: markerLabelColors),
+                              Positioned(
+                                  bottom: 40,
+                                  right: 20,
+                                  child: FloatingActionRow(
+                                    axis: Axis.vertical,
+                                    children: [
+                                      FloatingActionRowButton(
+                                        icon: Icon(
+                                          Icons.person,
+                                          color: Colors.blueGrey,
+                                        ),
+                                        onTap: () {
+                                          widget.user != null
+                                              ? _open()
+                                              : loginAlert(context, 'profile')
+                                                  .show();
+                                        },
+                                      ),
+                                      FloatingActionRowDivider(
+                                          color: Colors.blueGrey),
+                                      FloatingActionRowButton(
+                                        icon: Icon(Icons.add,
+                                            color: Colors.blueGrey),
+                                        onTap: () {
+                                          if (widget.user != null) {
+                                            companyFormAlert(context).show();
+                                          } else {
+                                            loginAlert(context, 'company')
+                                                .show();
+                                          }
+                                        },
+                                      ),
+                                      FloatingActionRowDivider(
+                                          color: Colors.blueGrey),
+                                      FloatingActionRowButton(
+                                        icon: Icon(Icons.my_location,
+                                            color: Colors.blueGrey),
+                                        onTap: () {
+                                          mapController.move(
+                                              state.location, 6.5);
+                                        },
+                                      ),
+                                      FloatingActionRowDivider(
+                                          color: Colors.blueGrey),
+                                      FloatingActionRowButton(
+                                        icon: Icon(Icons.help_outline,
+                                            color: Colors.blueGrey),
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              PageTransition(
+                                                  duration: Duration(
+                                                      milliseconds: 400),
+                                                  type:
+                                                      PageTransitionType.scale,
+                                                  child: MapIntro()));
+                                        },
+                                      ),
+                                    ],
+                                    elevation: 2,
+                                  )),
+                              Positioned(
+                                bottom: 40,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: buildFilterButtons(state),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
                         return Stack(
                           children: <Widget>[
-                            MapInterface(
-                                position: userPosition,
-                                mapController: mapController,
-                                controller: controller,
-                                markers: buildMapMarkers(state).toList()),
-                            state is CompanyUninitialized
-                                ? Center(
-                                    child: CircularProgressIndicator(),
-                                  )
-                                : Container(),
-                            CompanyPopup(
-                                offset: offset,
-                                markerLabelColors: markerLabelColors),
-                            Positioned(
-                                bottom: 30,
-                                right: 20,
-                                child: FloatingActionRow(
-                                  axis: Axis.vertical,
-                                  children: [
-                                    FloatingActionRowButton(
-                                      icon: Icon(
-                                        Icons.person,
-                                        color: Colors.blueGrey,
-                                      ),
-                                      onTap: () {
-                                        widget.user != null
-                                            ? _open()
-                                            : loginAlert(context, 'profile')
-                                                .show();
-                                      },
-                                    ),
-                                    FloatingActionRowDivider(
-                                        color: Colors.blueGrey),
-                                    FloatingActionRowButton(
-                                      icon: Icon(Icons.add,
-                                          color: Colors.blueGrey),
-                                      onTap: () {
-                                        if (widget.user != null) {
-                                          companyFormAlert(context).show();
-                                        } else {
-                                          loginAlert(context, 'company').show();
-                                        }
-                                      },
-                                    ),
-                                    FloatingActionRowDivider(
-                                        color: Colors.blueGrey),
-                                    FloatingActionRowButton(
-                                      icon: Icon(Icons.help_outline,
-                                          color: Colors.blueGrey),
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            PageTransition(
-                                                duration:
-                                                    Duration(milliseconds: 400),
-                                                type: PageTransitionType.scale,
-                                                child: MapIntro()));
-                                      },
-                                    ),
-                                  ],
-                                  color: Colors.white,
-                                  elevation: 4,
-                                )),
-                            Positioned(
-                              bottom: 40,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: buildFilterButtons(state),
+                            Container(
+                              height: MediaQuery.of(context).size.height,
+                              width: MediaQuery.of(context).size.width,
+                              color: Colors.white,
+                              child: Center(
+                                child: SpinKitPulse(
+                                  color: Colors.blueGrey,
+                                  size: 40.0,
+                                ),
                               ),
                             ),
                           ],
@@ -320,7 +358,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
         label: Container(
           width: 140,
           child: Text(
-            'Abuse - small',
+            'Level 2',
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -336,7 +374,7 @@ class MapState extends State<Map> with TickerProviderStateMixin {
         label: Container(
           width: 140,
           child: Text(
-            'Plastic - small',
+            'Level 1',
             style: TextStyle(color: Colors.white),
           ),
         ),
