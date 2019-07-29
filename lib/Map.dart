@@ -78,13 +78,15 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       await location.getLocation().then((value) {
         var currentLocation = LatLng(value.latitude, value.longitude);
         _companyBloc.dispatch(UpdateLocation(location: currentLocation));
+        mapController.move(currentLocation, 6.5);
       });
     } catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         print('Permission denied');
       }
-      _companyBloc
-          .dispatch(UpdateLocation(location: LatLng(40.7128, -74.0060)));
+      var newYork = LatLng(40.7128, -74.0060);
+      _companyBloc.dispatch(UpdateLocation(location: newYork));
+      mapController.move(newYork, 6.5);
     }
   }
 
