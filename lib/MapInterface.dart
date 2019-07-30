@@ -47,7 +47,7 @@ class MapInterface extends StatelessWidget {
       layers: [
         TileLayerOptions(
           backgroundColor: Colors.white,
-          keepBuffer: 20,
+          keepBuffer: 30,
           urlTemplate: "https://api.mapbox.com/v4/"
               "{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}",
           additionalOptions: {

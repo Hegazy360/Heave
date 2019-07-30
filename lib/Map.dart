@@ -34,7 +34,7 @@ class Map extends StatefulWidget {
 }
 
 class MapState extends State<Map> with TickerProviderStateMixin {
-  MapController mapController;
+  MapController mapController = MapController();
   AnimationController controller;
   Animation<Offset> offset;
   final GlobalKey<InnerDrawerState> _innerDrawerKey =
@@ -58,14 +58,13 @@ class MapState extends State<Map> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _getUserLocation();
-
     _loginBloc = BlocProvider.of<LoginBloc>(context);
     _companyBloc = BlocProvider.of<CompanyBloc>(context);
     _companyPopupBloc = BlocProvider.of<CompanypopupBloc>(context);
     _companyBloc.dispatch(FetchCompanies());
 
-    mapController = MapController();
+    _getUserLocation();
+
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
 
@@ -78,15 +77,16 @@ class MapState extends State<Map> with TickerProviderStateMixin {
       await location.getLocation().then((value) {
         var currentLocation = LatLng(value.latitude, value.longitude);
         _companyBloc.dispatch(UpdateLocation(location: currentLocation));
-        mapController.move(currentLocation, 6.5);
+        mapController.onReady.then((result) {
+          mapController.move(currentLocation, 6.5);
+        });
       });
     } catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-        print('Permission denied');
-      }
       var newYork = LatLng(40.7128, -74.0060);
       _companyBloc.dispatch(UpdateLocation(location: newYork));
-      mapController.move(newYork, 6.5);
+      mapController.onReady.then((result) {
+        mapController.move(newYork, 6.5);
+      });
     }
   }
 

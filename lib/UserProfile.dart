@@ -38,7 +38,7 @@ class _UserProfileState extends State<UserProfile> {
                               ? state.user['info'].photoUrl != null
                                   ? state.user['info'].photoUrl + "?height=500"
                                   : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg'
-                              : 'https://via.placeholder.com/140x100',
+                              : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg',
                           fit: BoxFit.cover,
                           width: 150,
                           height: 150,
