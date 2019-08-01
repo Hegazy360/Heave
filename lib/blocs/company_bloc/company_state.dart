@@ -22,25 +22,28 @@ class CompanyLoaded extends CompanyState {
   final Map filteredCompanies;
   final int filter;
   final LatLng location;
+  final bool showFilters;
 
-  CompanyLoaded(
-      this.companies, this.filteredCompanies, this.filter, this.location)
-      : super([companies, filteredCompanies, filter, location]);
+  CompanyLoaded(this.companies, this.filteredCompanies, this.filter,
+      this.location, this.showFilters)
+      : super([companies, filteredCompanies, filter, location, showFilters]);
 
   CompanyLoaded copyWith(
-      {List companies, Map filteredCompanies, int filter, LatLng location}) {
+      {List companies, Map filteredCompanies, int filter, LatLng location , bool showFilters}) {
     return CompanyLoaded(
-        companies ?? this.companies,
-        filteredCompanies ?? this.filteredCompanies,
-        filter ?? this.filter,
-        location ?? this.location);
+      companies ?? this.companies,
+      filteredCompanies ?? this.filteredCompanies,
+      filter ?? this.filter,
+      location ?? this.location,
+      showFilters ?? this.showFilters,
+    );
   }
 
   @override
   String toString() {
     var companiesLength = companies.length;
     var filteredCompaniesLength = filteredCompanies.length;
-    return 'CompanyLoaded { companies: $companiesLength, filteredCompanies: $filteredCompaniesLength, filter: $filter, location: $location }';
+    return 'CompanyLoaded { companies: $companiesLength, filteredCompanies: $filteredCompaniesLength, filter: $filter, location: $location, showFilters: $showFilters }';
   }
 }
 

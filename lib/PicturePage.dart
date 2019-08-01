@@ -12,7 +12,7 @@ class PicturePage extends StatefulWidget {
 
 class _PicturePageState extends State<PicturePage>
     with SingleTickerProviderStateMixin {
-  AnimationController dateController;
+  AnimationController controller;
   Animation<Offset> dateOffset;
   // AnimationController photoGrapherController;
   Animation<Offset> photoGrapherOffset;
@@ -23,13 +23,13 @@ class _PicturePageState extends State<PicturePage>
   @override
   void initState() {
     super.initState();
-    dateController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 2000));
+    controller = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1000));
 
     dateOffset =
         Tween<Offset>(begin: Offset(-1.0, 0.0), end: Offset.zero).animate(
       CurvedAnimation(
-        parent: dateController,
+        parent: controller,
         curve: Interval(
           0.5,
           1,
@@ -41,7 +41,7 @@ class _PicturePageState extends State<PicturePage>
     photoGrapherOffset =
         Tween<Offset>(begin: Offset(1.0, 0.0), end: Offset.zero).animate(
       CurvedAnimation(
-        parent: dateController,
+        parent: controller,
         curve: Interval(
           0.5,
           1,
@@ -52,7 +52,7 @@ class _PicturePageState extends State<PicturePage>
 
     titleOpacity = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: dateController,
+        parent: controller,
         curve: Interval(
           0.5,
           1.000,
@@ -64,7 +64,7 @@ class _PicturePageState extends State<PicturePage>
     descriptionOffset =
         Tween<Offset>(begin: Offset(0.0, 1.0), end: Offset.zero).animate(
       CurvedAnimation(
-        parent: dateController,
+        parent: controller,
         curve: Interval(
           0,
           0.5,
@@ -75,7 +75,7 @@ class _PicturePageState extends State<PicturePage>
 
     descriptionOpacity = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: dateController,
+        parent: controller,
         curve: Interval(
           0.0,
           1.000,
@@ -84,13 +84,13 @@ class _PicturePageState extends State<PicturePage>
       ),
     );
 
-    dateController.forward();
+    controller.forward();
   }
 
   @override
   void dispose() {
     super.dispose();
-    dateController.dispose();
+    controller.dispose();
   }
 
   @override

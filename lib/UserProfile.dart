@@ -76,7 +76,7 @@ class _UserProfileState extends State<UserProfile> {
                           state.user['data']['reports'].length > 0
                       ? Container(
                           padding: EdgeInsets.only(top: 50, bottom: 40),
-                          height: 490,
+                          height: 350,
                           child: Column(
                             children: <Widget>[
                               Padding(

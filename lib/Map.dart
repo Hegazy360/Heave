@@ -36,7 +36,12 @@ class Map extends StatefulWidget {
 class MapState extends State<Map> with TickerProviderStateMixin {
   MapController mapController = MapController();
   AnimationController controller;
+  AnimationController tempController;
+  AnimationController filterButtonController;
   Animation<Offset> offset;
+  Animation<Offset> filtersOffset;
+  Animation<double> filterButtonScale;
+
   final GlobalKey<InnerDrawerState> _innerDrawerKey =
       GlobalKey<InnerDrawerState>();
 
@@ -65,11 +70,39 @@ class MapState extends State<Map> with TickerProviderStateMixin {
 
     _getUserLocation();
 
+    tempController = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1000));
+    filterButtonController = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1000));
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
 
     offset = Tween<Offset>(begin: Offset(0.0, -1.0), end: Offset.zero)
         .animate(controller);
+    filtersOffset =
+        Tween<Offset>(begin: Offset(-1.0, 0.0), end: Offset.zero).animate(
+      CurvedAnimation(
+        parent: tempController,
+        curve: Interval(
+          0.1,
+          1.0,
+          curve: Curves.fastOutSlowIn,
+        ),
+      ),
+    );
+    filterButtonScale = Tween<double>(
+      begin: 1.0,
+      end: 0.0,
+    ).animate(
+      CurvedAnimation(
+        parent: filterButtonController,
+        curve: Interval(
+          0.4,
+          1.0,
+          curve: Curves.fastOutSlowIn,
+        ),
+      ),
+    );
   }
 
   void _getUserLocation() async {
@@ -78,14 +111,14 @@ class MapState extends State<Map> with TickerProviderStateMixin {
         var currentLocation = LatLng(value.latitude, value.longitude);
         _companyBloc.dispatch(UpdateLocation(location: currentLocation));
         mapController.onReady.then((result) {
-          mapController.move(currentLocation, 6.5);
+          mapController.move(currentLocation, 6);
         });
       });
     } catch (e) {
       var newYork = LatLng(40.7128, -74.0060);
       _companyBloc.dispatch(UpdateLocation(location: newYork));
       mapController.onReady.then((result) {
-        mapController.move(newYork, 6.5);
+        mapController.move(newYork, 6);
       });
     }
   }
@@ -271,13 +304,42 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                                     ],
                                     elevation: 2,
                                   )),
-                              Positioned(
-                                bottom: 40,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: buildFilterButtons(state),
-                                ),
-                              ),
+                              state.showFilters
+                                  ? Positioned(
+                                      bottom: 40,
+                                      child: SlideTransition(
+                                        position: filtersOffset,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: buildFilterButtons(state),
+                                        ),
+                                      ),
+                                    )
+                                  : Positioned(
+                                      bottom: 50,
+                                      left: 20,
+                                      child: ScaleTransition(
+                                        scale: filterButtonScale,
+                                        child: Container(
+                                          child: FloatingActionButton(
+                                            heroTag: 'toggleFilters',
+                                            backgroundColor: Colors.white,
+                                            child: Icon(
+                                              Icons.filter_list,
+                                              size: 30,
+                                              color: Colors.blueGrey,
+                                            ),
+                                            onPressed: () {
+                                              _companyBloc
+                                                  .dispatch(ToggleFilters());
+                                              tempController.forward();
+                                              filterButtonController.forward();
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    )
                             ],
                           );
                         }
@@ -336,21 +398,45 @@ class MapState extends State<Map> with TickerProviderStateMixin {
           _companyBloc.dispatch(UpdateFilter(filter: filter == 4 ? -1 : 4));
         },
       ),
-      RaisedButton.icon(
-        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[3])),
-        elevation: 1,
-        color: filter == 3 ? Colors.black38 : Colors.black12,
-        icon: Icon(Icons.filter_3, color: Colors.white),
-        label: Container(
-          width: 140,
-          child: Text(
-            'Working Conditions',
-            style: TextStyle(color: Colors.white),
+      Row(
+        children: <Widget>[
+          RaisedButton.icon(
+            shape:
+                Border(left: BorderSide(width: 5, color: markerLabelColors[3])),
+            elevation: 1,
+            color: filter == 3 ? Colors.black38 : Colors.black12,
+            icon: Icon(Icons.filter_3, color: Colors.white),
+            label: Container(
+              width: 140,
+              child: Text(
+                'Working Conditions',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            onPressed: () {
+              _companyBloc.dispatch(UpdateFilter(filter: filter == 3 ? -1 : 3));
+            },
           ),
-        ),
-        onPressed: () {
-          _companyBloc.dispatch(UpdateFilter(filter: filter == 3 ? -1 : 3));
-        },
+          Container(
+            width: 37,
+            height: 37,
+            margin: EdgeInsets.only(left: 7),
+            child: FloatingActionButton(
+              child: Icon(
+                Icons.close,
+                color: Colors.white,
+                size: 30,
+              ),
+              backgroundColor: Colors.black38,
+              onPressed: () {
+                tempController.reverse().then((value) {
+                  _companyBloc.dispatch(ToggleFilters());
+                });
+                filterButtonController.reverse();
+              },
+            ),
+          )
+        ],
       ),
       RaisedButton.icon(
         shape: Border(left: BorderSide(width: 5, color: markerLabelColors[2])),
