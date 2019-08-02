@@ -59,20 +59,18 @@ class _NewsState extends State<News> {
         ),
         body: Stack(
           children: <Widget>[
-            BlocBuilder(
-                bloc: _newsBloc,
-                builder: (BuildContext context, NewsState state) {
-                  if (state is NewsLoaded)
-                    return TabBarView(
-                      children: [
-                        NewsList(newsList: state.climateNewsList),
-                        NewsList(newsList: state.oceanNewsList),
-                      ],
-                    );
-                  if (state is NewsUninitialized)
-                    return Center(child: CircularProgressIndicator());
-                  return Container();
-                }),
+            BlocBuilder<NewsBloc, NewsState>(builder: (context, state) {
+              if (state is NewsLoaded)
+                return TabBarView(
+                  children: [
+                    NewsList(newsList: state.climateNewsList),
+                    NewsList(newsList: state.oceanNewsList),
+                  ],
+                );
+              if (state is NewsUninitialized)
+                return Center(child: CircularProgressIndicator());
+              return Container();
+            }),
             Positioned(
               bottom: 50,
               right: 20,
@@ -208,7 +206,10 @@ class NewsList extends StatelessWidget {
                     errorWidget: (context, url, error) => Center(
                       child: Column(
                         children: <Widget>[
-                          Icon(Icons.sentiment_very_dissatisfied, size: 30,),
+                          Icon(
+                            Icons.sentiment_very_dissatisfied,
+                            size: 30,
+                          ),
                           Text("Something went wrong.")
                         ],
                       ),

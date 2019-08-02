@@ -30,47 +30,45 @@ class _PicturesState extends State<Pictures> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        BlocBuilder(
-            bloc: _pictureBloc,
-            builder: (BuildContext context, PictureState state) {
-              if (state is PicturesLoaded)
-                return ListView.builder(
-                    itemCount: state.pictures.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                  duration: Duration(milliseconds: 600),
-                                  type: PageTransitionType.fade,
-                                  child: PicturePage(state.pictures[index])));
-                        },
-                        child: Card(
-                            child: ConstrainedBox(
-                          constraints: new BoxConstraints(
-                            minHeight: 150.0,
+        BlocBuilder<PictureBloc, PictureState>(builder: (context, state) {
+          if (state is PicturesLoaded)
+            return ListView.builder(
+                itemCount: state.pictures.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          PageTransition(
+                              duration: Duration(milliseconds: 600),
+                              type: PageTransitionType.fade,
+                              child: PicturePage(state.pictures[index])));
+                    },
+                    child: Card(
+                        child: ConstrainedBox(
+                      constraints: new BoxConstraints(
+                        minHeight: 150.0,
+                      ),
+                      child: Hero(
+                        tag: state.pictures[index]['url'],
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) => SpinKitPulse(
+                            color: Colors.blueGrey,
+                            size: 25.0,
                           ),
-                          child: Hero(
-                            tag: state.pictures[index]['url'],
-                            child: CachedNetworkImage(
-                              placeholder: (context, url) => SpinKitPulse(
-                                color: Colors.blueGrey,
-                                size: 25.0,
-                              ),
-                              imageUrl: state.pictures[index]['url'] ??
-                                  'https://via.placeholder.com/140x100',
-                              fit: BoxFit.cover,
-                              fadeInDuration: Duration(seconds: 1),
-                            ),
-                          ),
-                        )),
-                      );
-                    });
-              if (state is PicturesUninitialized)
-                return Center(child: CircularProgressIndicator());
-              return Container();
-            }),
+                          imageUrl: state.pictures[index]['url'] ??
+                              'https://via.placeholder.com/140x100',
+                          fit: BoxFit.cover,
+                          fadeInDuration: Duration(seconds: 1),
+                        ),
+                      ),
+                    )),
+                  );
+                });
+          if (state is PicturesUninitialized)
+            return Center(child: CircularProgressIndicator());
+          return Container();
+        }),
         Positioned(
             bottom: 50,
             right: 20,

@@ -33,9 +33,3 @@ class UpdateLocation extends CompanyEvent {
   @override
   String toString() => 'UpdateLocation';
 }
-
-class ToggleFilters extends CompanyEvent {
-
-  @override
-  String toString() => 'ToggleFilters';
-}

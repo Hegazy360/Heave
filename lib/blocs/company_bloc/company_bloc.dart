@@ -17,7 +17,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       try {
         if (currentState is CompanyUninitialized) {
           final companies = await _fetchCompanies();
-          yield CompanyLoaded(companies, {}, -1, null, false);
+          yield CompanyLoaded(companies, {}, -1, null);
           dispatch(PrepareCompaniesFilters());
           return;
         }
@@ -55,13 +55,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       if (currentState is CompanyLoaded) {
         yield (currentState as CompanyLoaded)
             .copyWith(location: event.location);
-      }
-      return;
-    }
-    if (event is ToggleFilters) {
-      if (currentState is CompanyLoaded) {
-        yield (currentState as CompanyLoaded)
-            .copyWith(showFilters: !(currentState as CompanyLoaded).showFilters);
       }
       return;
     }

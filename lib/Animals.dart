@@ -37,83 +37,75 @@ class _AnimalsState extends State<Animals> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        BlocBuilder(
-            bloc: _animalsBloc,
-            builder: (BuildContext context, AnimalState state) {
-              if (state is AnimalsLoaded)
-                return ListView.builder(
-                    itemCount: state.animals.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () => {},
-                        child: Container(
-                          height: 136,
+        BlocBuilder<AnimalBloc, AnimalState>(builder: (context, state) {
+          if (state is AnimalsLoaded)
+            return ListView.builder(
+                itemCount: state.animals.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () => {},
+                    child: Container(
+                      height: 136,
+                      child: Card(
+                          color: colors[state.animals[index]['level']],
                           child: Card(
-                              color: colors[state.animals[index]['level']],
-                              child: Card(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Row(
                                 children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Container(
-                                        padding: EdgeInsets.all(15),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                2 /
-                                                3,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              state.animals[index]['name'],
+                                  Container(
+                                    padding: EdgeInsets.all(15),
+                                    width: MediaQuery.of(context).size.width *
+                                        2 /
+                                        3,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          state.animals[index]['name'],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 5.0),
+                                          child: Text(
+                                              state.animals[index]['status'] ??
+                                                  'Stable',
                                               style: TextStyle(
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(top: 5.0),
-                                              child: Text(
-                                                  state.animals[index]
-                                                          ['status'] ??
-                                                      'Stable',
-                                                  style: TextStyle(
-                                                      color: colors[
-                                                          state.animals[index]
-                                                              ['level']],
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            )
-                                          ],
-                                        ),
+                                                  color: colors[state
+                                                      .animals[index]['level']],
+                                                  fontWeight: FontWeight.bold)),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: CachedNetworkImage(
+                                      placeholder: (context, url) =>
+                                          SpinKitPulse(
+                                        color: Colors.blueGrey,
+                                        size: 25.0,
                                       ),
-                                      Expanded(
-                                        child: CachedNetworkImage(
-                                          placeholder: (context, url) =>
-                                              SpinKitPulse(
-                                            color: Colors.blueGrey,
-                                            size: 25.0,
-                                          ),
-                                          imageUrl: state.animals[index]
-                                                  ['image'] ??
-                                              'https://via.placeholder.com/140x100',
-                                          fit: BoxFit.cover,
-                                          height: 120,
-                                          fadeInDuration: Duration(seconds: 1),
-                                        ),
-                                      ),
-                                    ],
+                                      imageUrl: state.animals[index]['image'] ??
+                                          'https://via.placeholder.com/140x100',
+                                      fit: BoxFit.cover,
+                                      height: 120,
+                                      fadeInDuration: Duration(seconds: 1),
+                                    ),
                                   ),
                                 ],
-                              ))),
-                        ),
-                      );
-                    });
-              if (state is AnimalsUninitialized)
-                return Center(child: CircularProgressIndicator());
-              return Container();
-            }),
+                              ),
+                            ],
+                          ))),
+                    ),
+                  );
+                });
+          if (state is AnimalsUninitialized)
+            return Center(child: CircularProgressIndicator());
+          return Container();
+        }),
         Positioned(
           bottom: 50,
           right: 20,

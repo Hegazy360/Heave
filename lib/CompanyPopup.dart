@@ -20,165 +20,156 @@ class CompanyPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _companyPopupBloc = BlocProvider.of<CompanypopupBloc>(context);
-
-    return BlocBuilder(
-        bloc: _companyPopupBloc,
-        builder: (BuildContext context, CompanypopupState state) {
-          if (state is ActiveCompany) {
-            return Align(
-              alignment: Alignment.topCenter,
-              child: SlideTransition(
-                  position: offset,
-                  child: Container(
-                    padding: EdgeInsets.only(
-                        top: 30, right: 10, left: 10),
-                    width: MediaQuery.of(context).size.width,
-                    height: 235,
-                    child: Card(
-                      color: Colors.white,
-                      child: Padding(
-                          padding: EdgeInsets.fromLTRB(23, 16, 23, 0),
-                          child: Column(
+    return BlocBuilder<CompanypopupBloc, CompanypopupState>(
+        builder: (context, state) {
+      if (state is ActiveCompany) {
+        return Align(
+          alignment: Alignment.topCenter,
+          child: SlideTransition(
+              position: offset,
+              child: Container(
+                padding: EdgeInsets.only(top: 30, right: 10, left: 10),
+                width: MediaQuery.of(context).size.width,
+                height: 235,
+                child: Card(
+                  color: Colors.white,
+                  child: Padding(
+                      padding: EdgeInsets.fromLTRB(23, 16, 23, 0),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: Hero(
+                                tag: 'company_name',
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: Text(
+                                    state.company['data']['name'],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                )),
+                          ),
+                          Row(
                             children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Hero(
-                                    tag: 'company_name',
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: Text(
-                                        state.company['data']['name'],
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
+                              Hero(
+                                tag: 'company_image',
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: Container(
+                                        color: Colors.white,
+                                        padding: EdgeInsets.only(right: 15),
+                                        child: CachedNetworkImage(
+                                          placeholder: (context, url) =>
+                                              SpinKitPulse(
                                             color: Colors.blueGrey,
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    )),
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Hero(
-                                    tag: 'company_image',
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(50),
-                                        child: Container(
-                                            color: Colors.white,
-                                            padding: EdgeInsets.only(
-                                                right: 15),
-                                            child: CachedNetworkImage(
-                                              placeholder: (context, url) =>
-                                                  SpinKitPulse(
-                                                color: Colors.blueGrey,
-                                                size: 25.0,
-                                              ),
-                                              imageUrl: state.company['data']
-                                                      ['logo_url'] ??
-                                                  'https://via.placeholder.com/140x100',
-                                              fit: BoxFit.cover,
-                                              height: 100,
-                                              width: 100,
-                                              fadeInDuration:
-                                                  Duration(seconds: 1),
-                                            ))),
-                                  ),
-                                  Expanded(
-                                    child: Hero(
-                                      tag: 'company_accusations',
-                                      child: Material(
-                                        color: Colors.transparent,
-                                        child: Container(
-                                            width: 200,
-                                            child: Text(
-                                              state.company['data']
-                                                      ['accusations'][0] ??
-                                                  '',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w400),
-                                            )),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Hero(
-                                      tag: 'company_level',
-                                      child: Text(
-                                        'Rank: ' +
-                                            state.company['data']['level']
-                                                .toString(),
-                                        style: TextStyle(
-                                            color: markerLabelColors[state
-                                                .company['data']['level']],
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                      )),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      ButtonTheme(
-                                        padding: EdgeInsets.all(0),
-                                        minWidth: 0,
-                                        child: RaisedButton(
-                                            elevation: 0,
-                                            color: Colors.white,
-                                            onPressed: () {
-                                              if (state.company['data']
-                                                      ['emails'] !=
-                                                  null) {
-                                                sendEmail(state.company);
-                                              }
-                                            },
-                                            child: Hero(
-                                                tag: 'email_icon',
-                                                child: Icon(
-                                                  Icons.email,
-                                                  size: 30,
-                                                  color: Colors.blueGrey,
-                                                ))),
-                                      ),
-                                      ButtonTheme(
-                                        padding: EdgeInsets.all(0),
-                                        minWidth: 0,
-                                        child: RaisedButton(
-                                          elevation: 0,
-                                          color: Colors.white,
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                PageTransition(
-                                                    duration: Duration(
-                                                        milliseconds: 700),
-                                                    type:
-                                                        PageTransitionType.fade,
-                                                    child: CompanyPage(
-                                                        state.company)));
-                                          },
-                                          child: Icon(
-                                            Icons.info_outline,
-                                            size: 30,
-                                            color: Colors.blueGrey,
+                                            size: 25.0,
                                           ),
-                                        ),
-                                      ),
-                                    ],
+                                          imageUrl: state.company['data']
+                                                  ['logo_url'] ??
+                                              'https://via.placeholder.com/140x100',
+                                          fit: BoxFit.cover,
+                                          height: 100,
+                                          width: 100,
+                                          fadeInDuration: Duration(seconds: 1),
+                                        ))),
+                              ),
+                              Expanded(
+                                child: Hero(
+                                  tag: 'company_accusations',
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Container(
+                                        width: 200,
+                                        child: Text(
+                                          state.company['data']['accusations']
+                                                  [0] ??
+                                              '',
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400),
+                                        )),
                                   ),
-                                ],
+                                ),
                               )
                             ],
-                          )),
-                    ),
-                  )),
-            );
-          }
-          return Container();
-        });
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Hero(
+                                  tag: 'company_level',
+                                  child: Text(
+                                    'Rank: ' +
+                                        state.company['data']['level']
+                                            .toString(),
+                                    style: TextStyle(
+                                        color: markerLabelColors[
+                                            state.company['data']['level']],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  )),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  ButtonTheme(
+                                    padding: EdgeInsets.all(0),
+                                    minWidth: 0,
+                                    child: RaisedButton(
+                                        elevation: 0,
+                                        color: Colors.white,
+                                        onPressed: () {
+                                          if (state.company['data']['emails'] !=
+                                              null) {
+                                            sendEmail(state.company);
+                                          }
+                                        },
+                                        child: Hero(
+                                            tag: 'email_icon',
+                                            child: Icon(
+                                              Icons.email,
+                                              size: 30,
+                                              color: Colors.blueGrey,
+                                            ))),
+                                  ),
+                                  ButtonTheme(
+                                    padding: EdgeInsets.all(0),
+                                    minWidth: 0,
+                                    child: RaisedButton(
+                                      elevation: 0,
+                                      color: Colors.white,
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            PageTransition(
+                                                duration:
+                                                    Duration(milliseconds: 700),
+                                                type: PageTransitionType.fade,
+                                                child: CompanyPage(
+                                                    state.company)));
+                                      },
+                                      child: Icon(
+                                        Icons.info_outline,
+                                        size: 30,
+                                        color: Colors.blueGrey,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      )),
+                ),
+              )),
+        );
+      }
+      return Container();
+    });
   }
 
   Future<void> sendEmail(company) async {
