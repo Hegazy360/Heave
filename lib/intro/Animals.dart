@@ -1,3 +1,4 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_slider/dot_animation_enum.dart';
 import 'package:intro_slider/intro_slider.dart';
@@ -28,7 +29,7 @@ class AnimalsIntroState extends State<AnimalsIntro> {
             fontWeight: FontWeight.bold,
             fontFamily: 'RobotoMono'),
         description:
-            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
+            "aaaLossssrem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
         styleDescription: TextStyle(
             color: Color(0xfffe9c8f),
             fontSize: 20.0,
@@ -117,13 +118,21 @@ class AnimalsIntroState extends State<AnimalsIntro> {
           margin: EdgeInsets.only(bottom: 60.0, top: 60.0),
           child: ListView(
             children: <Widget>[
-              GestureDetector(
-                  child: Image.asset(
-                currentSlide.pathImage,
-                width: MediaQuery.of(context).size.width,
+              Container(
                 height: 200.0,
-                fit: BoxFit.contain,
-              )),
+                child: i == 0
+                    ? FlareActor("assets/animations/dino.flr",
+                        alignment: Alignment.center,
+                        fit: BoxFit.contain,
+                        animation: "come_alive")
+                    : GestureDetector(
+                        child: Image.asset(
+                        currentSlide.pathImage,
+                        width: MediaQuery.of(context).size.width,
+                        height: 200.0,
+                        fit: BoxFit.contain,
+                      )),
+              ),
               Container(
                 child: Text(
                   currentSlide.title,
