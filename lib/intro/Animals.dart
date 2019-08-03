@@ -22,56 +22,20 @@ class AnimalsIntroState extends State<AnimalsIntro> {
 
     slides.add(
       Slide(
-        title: "ANIMALS",
+        title: "Extinction Status",
         styleTitle: TextStyle(
             color: Color(0xff3da4ab),
             fontSize: 30.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'RobotoMono'),
         description:
-            "aaaLossssrem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
+            "Sadly, the current extinction rate is approximately 100 extinctions per million species per year, or 1,000 times higher than natural background rates. A live status of some of the current endangered species will be visible here, to help reduce these numbers make sure to take action whether by using Heave or supporting animal protection organizations.",
         styleDescription: TextStyle(
             color: Color(0xfffe9c8f),
             fontSize: 20.0,
             fontStyle: FontStyle.italic,
             fontFamily: 'Raleway'),
         pathImage: "assets/images/intro/map/map.jpg",
-      ),
-    );
-    slides.add(
-      Slide(
-        title: "INFORMATION",
-        styleTitle: TextStyle(
-            color: Color(0xff3da4ab),
-            fontSize: 30.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'RobotoMono'),
-        description:
-            "Ye indulgence unreserved connection alteration appearance",
-        styleDescription: TextStyle(
-            color: Color(0xfffe9c8f),
-            fontSize: 20.0,
-            fontStyle: FontStyle.italic,
-            fontFamily: 'Raleway'),
-        pathImage: "assets/images/intro/map/popup.jpg",
-      ),
-    );
-    slides.add(
-      Slide(
-        title: "ACTIONS",
-        styleTitle: TextStyle(
-            color: Color(0xff3da4ab),
-            fontSize: 30.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'RobotoMono'),
-        description:
-            "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
-        styleDescription: TextStyle(
-            color: Color(0xfffe9c8f),
-            fontSize: 20.0,
-            fontStyle: FontStyle.italic,
-            fontFamily: 'Raleway'),
-        pathImage: "assets/images/intro/map/buttons.jpg",
       ),
     );
   }
@@ -119,21 +83,7 @@ class AnimalsIntroState extends State<AnimalsIntro> {
           child: ListView(
             children: <Widget>[
               Container(
-                height: 200.0,
-                child: i == 0
-                    ? FlareActor("assets/animations/dino.flr",
-                        alignment: Alignment.center,
-                        fit: BoxFit.contain,
-                        animation: "come_alive")
-                    : GestureDetector(
-                        child: Image.asset(
-                        currentSlide.pathImage,
-                        width: MediaQuery.of(context).size.width,
-                        height: 200.0,
-                        fit: BoxFit.contain,
-                      )),
-              ),
-              Container(
+                padding: EdgeInsets.only(top: 100),
                 child: Text(
                   currentSlide.title,
                   style: currentSlide.styleTitle,
@@ -141,15 +91,13 @@ class AnimalsIntroState extends State<AnimalsIntro> {
                 ),
                 margin: EdgeInsets.only(top: 20.0),
               ),
-              Container(
+              Padding(
                 child: Text(
                   currentSlide.description,
                   style: currentSlide.styleDescription,
                   textAlign: TextAlign.center,
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                margin: EdgeInsets.only(top: 20.0),
+                padding: EdgeInsets.all(20.0),
               ),
             ],
           ),

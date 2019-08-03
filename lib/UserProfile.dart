@@ -38,8 +38,8 @@ class _UserProfileState extends State<UserProfile> {
                               ? state.user['info'].photoUrl != null
                                       ? state.user['info'].photoUrl +
                                           "?height=500"
-                                      : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg'
-                                  : 'https://profilepicturesdp.com/wp-content/uploads/2018/06/default-profile-picture-funny-10.jpg',
+                                      : 'https://surffunny.com/wp-content/uploads/2019/07/I-kept-seeing-these-funny-pet-portrait-ads-and-I.jpg'
+                                  : 'https://surffunny.com/wp-content/uploads/2019/07/I-kept-seeing-these-funny-pet-portrait-ads-and-I.jpg',
                               fit: BoxFit.cover,
                               width: 150,
                               height: 150,

@@ -29,7 +29,7 @@ class MapIntroState extends State<MapIntro> {
             fontWeight: FontWeight.bold,
             fontFamily: 'RobotoMono'),
         description:
-            "aaaLossssrem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
+            "Here you'll find the companies who negatively affect our planet the most. From plastic pollution to animal abuse, this map will keep track of it all, with your help.",
         styleDescription: TextStyle(
             color: Color(0xfffe9c8f),
             fontSize: 20.0,
@@ -40,14 +40,14 @@ class MapIntroState extends State<MapIntro> {
     );
     slides.add(
       Slide(
-        title: "INFORMATION",
+        title: "TAKE ACTION",
         styleTitle: TextStyle(
             color: Color(0xff3da4ab),
             fontSize: 30.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'RobotoMono'),
         description:
-            "Ye indulgence unreserved connection alteration appearance",
+            "Contact information are available for most companies, it takes 5 seconds to send an email that could help save our planet, we already wrote the email content for you to make it easier.",
         styleDescription: TextStyle(
             color: Color(0xfffe9c8f),
             fontSize: 20.0,
@@ -58,14 +58,14 @@ class MapIntroState extends State<MapIntro> {
     );
     slides.add(
       Slide(
-        title: "ACTIONS",
+        title: "BRING AWARENESS",
         styleTitle: TextStyle(
             color: Color(0xff3da4ab),
             fontSize: 30.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'RobotoMono'),
         description:
-            "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
+            "Unfortunately, the number of entities polluting and destroying our planet is BIG, that's why with your help, you can bring more awareness to these places in your city by reporting them to us.",
         styleDescription: TextStyle(
             color: Color(0xfffe9c8f),
             fontSize: 20.0,
@@ -141,15 +141,13 @@ class MapIntroState extends State<MapIntro> {
                 ),
                 margin: EdgeInsets.only(top: 20.0),
               ),
-              Container(
+              Padding(
                 child: Text(
                   currentSlide.description,
                   style: currentSlide.styleDescription,
                   textAlign: TextAlign.center,
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                margin: EdgeInsets.only(top: 20.0),
+                padding: EdgeInsets.all( 20.0),
               ),
             ],
           ),

@@ -22,56 +22,20 @@ class PicturesIntroState extends State<PicturesIntro> {
 
     slides.add(
       Slide(
-        title: "Pictures",
+        title: "Reminders",
         styleTitle: TextStyle(
             color: Color(0xff3da4ab),
             fontSize: 30.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'RobotoMono'),
         description:
-            "aaaLossssrem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
+            "Our planet is magical, a daily picture will be posted here to remind us of what we're fighting for, click on any picture to read the story behind it. ",
         styleDescription: TextStyle(
             color: Color(0xfffe9c8f),
             fontSize: 20.0,
             fontStyle: FontStyle.italic,
             fontFamily: 'Raleway'),
         pathImage: "assets/images/intro/map/map.jpg",
-      ),
-    );
-    slides.add(
-      Slide(
-        title: "INFORMATION",
-        styleTitle: TextStyle(
-            color: Color(0xff3da4ab),
-            fontSize: 30.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'RobotoMono'),
-        description:
-            "Ye indulgence unreserved connection alteration appearance",
-        styleDescription: TextStyle(
-            color: Color(0xfffe9c8f),
-            fontSize: 20.0,
-            fontStyle: FontStyle.italic,
-            fontFamily: 'Raleway'),
-        pathImage: "assets/images/intro/map/popup.jpg",
-      ),
-    );
-    slides.add(
-      Slide(
-        title: "ACTIONS",
-        styleTitle: TextStyle(
-            color: Color(0xff3da4ab),
-            fontSize: 30.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'RobotoMono'),
-        description:
-            "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
-        styleDescription: TextStyle(
-            color: Color(0xfffe9c8f),
-            fontSize: 20.0,
-            fontStyle: FontStyle.italic,
-            fontFamily: 'Raleway'),
-        pathImage: "assets/images/intro/map/buttons.jpg",
       ),
     );
   }
@@ -141,15 +105,13 @@ class PicturesIntroState extends State<PicturesIntro> {
                 ),
                 margin: EdgeInsets.only(top: 20.0),
               ),
-              Container(
+              Padding(
                 child: Text(
                   currentSlide.description,
                   style: currentSlide.styleDescription,
                   textAlign: TextAlign.center,
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                margin: EdgeInsets.only(top: 20.0),
+                padding: EdgeInsets.all(20.0),
               ),
             ],
           ),

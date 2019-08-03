@@ -93,14 +93,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 tabs: [
                   TabData(
                     iconData: Icons.map,
-                    title: "Companies",
+                    title: "Map",
                   ),
                   TabData(iconData: Icons.rss_feed, title: "News"),
                   TabData(
                     iconData: Icons.photo,
-                    title: "Pictures",
+                    title: "Reminders",
                   ),
-                  TabData(iconData: Icons.list, title: "Animals"),
+                  TabData(iconData: Icons.list, title: "Extinction"),
                 ],
                 onTabChangedListener: (position) {
                   setState(() {
