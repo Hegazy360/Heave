@@ -14,7 +14,6 @@ class _PicturePageState extends State<PicturePage>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<Offset> dateOffset;
-  // AnimationController photoGrapherController;
   Animation<Offset> photoGrapherOffset;
   Animation<Offset> descriptionOffset;
   Animation<double> titleOpacity;
@@ -184,7 +183,6 @@ class _PicturePageState extends State<PicturePage>
                   padding: EdgeInsets.fromLTRB(20, 15, 20, 20),
                   child: Text(
                     widget.picture['description'],
-                    textAlign: TextAlign.justify,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,

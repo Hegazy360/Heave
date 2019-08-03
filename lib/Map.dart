@@ -68,8 +68,6 @@ class MapState extends State<Map> with TickerProviderStateMixin {
     _companyPopupBloc = BlocProvider.of<CompanypopupBloc>(context);
     _companyBloc.dispatch(FetchCompanies());
 
-    _getUserLocation();
-
     tempController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 
@@ -236,123 +234,131 @@ class MapState extends State<Map> with TickerProviderStateMixin {
             _open();
           }
         }, child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-          return BlocBuilder<CompanyBloc, CompanyState>(
-              builder: (context, state) {
-            if (state is CompanyLoaded && state.location != null) {
-              return Stack(
-                children: <Widget>[
-                  MapInterface(
-                      position: state.location,
-                      mapController: mapController,
-                      controller: controller,
-                      markers: buildMapMarkers(state).toList()),
-                  CompanyPopup(
-                      offset: offset, markerLabelColors: markerLabelColors),
-                  Positioned(
-                      bottom: 40,
-                      right: 20,
-                      child: FloatingActionRow(
-                        axis: Axis.vertical,
-                        children: [
-                          FloatingActionRowButton(
-                            icon: Icon(
-                              Icons.person,
+          return BlocListener<CompanyBloc, CompanyState>(
+            listener: (context, state) {
+              if ((state as CompanyLoaded).location == null) {
+                _getUserLocation();
+              }
+            },
+            child: BlocBuilder<CompanyBloc, CompanyState>(
+                builder: (context, state) {
+              if (state is CompanyLoaded && state.location != null) {
+                return Stack(
+                  children: <Widget>[
+                    MapInterface(
+                        position: state.location,
+                        mapController: mapController,
+                        controller: controller,
+                        markers: buildMapMarkers(state).toList()),
+                    CompanyPopup(
+                        offset: offset, markerLabelColors: markerLabelColors),
+                    Positioned(
+                        bottom: 40,
+                        right: 20,
+                        child: FloatingActionRow(
+                          axis: Axis.vertical,
+                          children: [
+                            FloatingActionRowButton(
+                              icon: Icon(
+                                Icons.person,
+                                color: Colors.blueGrey,
+                              ),
+                              onTap: () {
+                                widget.user != null
+                                    ? _open()
+                                    : loginAlert(context, 'profile').show();
+                              },
+                            ),
+                            FloatingActionRowDivider(color: Colors.blueGrey),
+                            FloatingActionRowButton(
+                              icon: Icon(Icons.add, color: Colors.blueGrey),
+                              onTap: () {
+                                if (widget.user != null) {
+                                  companyFormAlert(context).show();
+                                } else {
+                                  loginAlert(context, 'company').show();
+                                }
+                              },
+                            ),
+                            FloatingActionRowDivider(color: Colors.blueGrey),
+                            FloatingActionRowButton(
+                              icon: Icon(Icons.my_location,
+                                  color: Colors.blueGrey),
+                              onTap: () {
+                                _getUserLocation();
+                                // mapController.move(state.location, 6.5);
+                              },
+                            ),
+                            FloatingActionRowDivider(color: Colors.blueGrey),
+                            FloatingActionRowButton(
+                              icon: Icon(Icons.help_outline,
+                                  color: Colors.blueGrey),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    PageTransition(
+                                        duration: Duration(milliseconds: 400),
+                                        type: PageTransitionType.scale,
+                                        child: MapIntro()));
+                              },
+                            ),
+                          ],
+                          elevation: 2,
+                        )),
+                    Positioned(
+                      bottom: 50,
+                      left: 20,
+                      child: ScaleTransition(
+                        scale: filterButtonScale,
+                        child: Container(
+                          child: FloatingActionButton(
+                            heroTag: 'toggleFilters',
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.filter_list,
+                              size: 30,
                               color: Colors.blueGrey,
                             ),
-                            onTap: () {
-                              widget.user != null
-                                  ? _open()
-                                  : loginAlert(context, 'profile').show();
+                            onPressed: () {
+                              tempController.forward();
                             },
                           ),
-                          FloatingActionRowDivider(color: Colors.blueGrey),
-                          FloatingActionRowButton(
-                            icon: Icon(Icons.add, color: Colors.blueGrey),
-                            onTap: () {
-                              if (widget.user != null) {
-                                companyFormAlert(context).show();
-                              } else {
-                                loginAlert(context, 'company').show();
-                              }
-                            },
-                          ),
-                          FloatingActionRowDivider(color: Colors.blueGrey),
-                          FloatingActionRowButton(
-                            icon:
-                                Icon(Icons.my_location, color: Colors.blueGrey),
-                            onTap: () {
-                              mapController.move(state.location, 6.5);
-                            },
-                          ),
-                          FloatingActionRowDivider(color: Colors.blueGrey),
-                          FloatingActionRowButton(
-                            icon: Icon(Icons.help_outline,
-                                color: Colors.blueGrey),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  PageTransition(
-                                      duration: Duration(milliseconds: 400),
-                                      type: PageTransitionType.scale,
-                                      child: MapIntro()));
-                            },
-                          ),
-                        ],
-                        elevation: 2,
-                      )),
-                  Positioned(
-                    bottom: 50,
-                    left: 20,
-                    child: ScaleTransition(
-                      scale: filterButtonScale,
-                      child: Container(
-                        child: FloatingActionButton(
-                          heroTag: 'toggleFilters',
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.filter_list,
-                            size: 30,
-                            color: Colors.blueGrey,
-                          ),
-                          onPressed: () {
-                            tempController.forward();
-                          },
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 40,
-                    child: FadeTransition(
-                      opacity: filtersListOpacity,
-                      child: SlideTransition(
-                        position: filtersOffset,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: buildFilterButtons(state),
+                    Positioned(
+                      bottom: 40,
+                      child: FadeTransition(
+                        opacity: filtersListOpacity,
+                        child: SlideTransition(
+                          position: filtersOffset,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: buildFilterButtons(state),
+                          ),
                         ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return Stack(
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white,
+                    child: Center(
+                      child: SpinKitPulse(
+                        color: Colors.blueGrey,
+                        size: 40.0,
                       ),
                     ),
                   ),
                 ],
               );
-            }
-            return Stack(
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.white,
-                  child: Center(
-                    child: SpinKitPulse(
-                      color: Colors.blueGrey,
-                      size: 40.0,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          });
+            }),
+          );
         })));
   }
 
@@ -360,12 +366,11 @@ class MapState extends State<Map> with TickerProviderStateMixin {
     int filter = state is CompanyLoaded ? state.filter : -1;
 
     return <Widget>[
-      RaisedButton.icon(
+      RaisedButton(
         shape: Border(left: BorderSide(width: 5, color: markerLabelColors[5])),
         elevation: 1,
         color: filter == 5 ? Colors.black38 : Colors.black12,
-        icon: Icon(Icons.filter_5, color: Colors.white),
-        label: Container(
+        child: Container(
           width: 140,
           child: Text(
             'Animal Abuse',
@@ -376,39 +381,22 @@ class MapState extends State<Map> with TickerProviderStateMixin {
           _companyBloc.dispatch(UpdateFilter(filter: filter == 5 ? -1 : 5));
         },
       ),
-      RaisedButton.icon(
-        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[4])),
-        elevation: 1,
-        color: filter == 4 ? Colors.black38 : Colors.black12,
-        icon: Icon(Icons.filter_4, color: Colors.white),
-        label: Container(
-          width: 140,
-          child: Text(
-            'Plastic Pollution',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        onPressed: () {
-          _companyBloc.dispatch(UpdateFilter(filter: filter == 4 ? -1 : 4));
-        },
-      ),
       Row(
         children: <Widget>[
-          RaisedButton.icon(
+          RaisedButton(
             shape:
-                Border(left: BorderSide(width: 5, color: markerLabelColors[3])),
+                Border(left: BorderSide(width: 5, color: markerLabelColors[4])),
             elevation: 1,
-            color: filter == 3 ? Colors.black38 : Colors.black12,
-            icon: Icon(Icons.filter_3, color: Colors.white),
-            label: Container(
+            color: filter == 4 ? Colors.black38 : Colors.black12,
+            child: Container(
               width: 140,
               child: Text(
-                'Working Conditions',
+                'Plastic Pollution',
                 style: TextStyle(color: Colors.white),
               ),
             ),
             onPressed: () {
-              _companyBloc.dispatch(UpdateFilter(filter: filter == 3 ? -1 : 3));
+              _companyBloc.dispatch(UpdateFilter(filter: filter == 4 ? -1 : 4));
             },
           ),
           Container(
@@ -426,41 +414,57 @@ class MapState extends State<Map> with TickerProviderStateMixin {
                 tempController.reverse();
               },
             ),
-          )
+          ),
         ],
       ),
-      RaisedButton.icon(
-        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[2])),
+      RaisedButton(
+        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[3])),
         elevation: 1,
-        color: filter == 2 ? Colors.black38 : Colors.black12,
-        icon: Icon(Icons.filter_2, color: Colors.white),
-        label: Container(
+        color: filter == 3 ? Colors.black38 : Colors.black12,
+        child: Container(
           width: 140,
           child: Text(
-            'Level 2',
+            'Working Conditions',
             style: TextStyle(color: Colors.white),
           ),
         ),
         onPressed: () {
-          _companyBloc.dispatch(UpdateFilter(filter: filter == 2 ? -1 : 2));
+          _companyBloc.dispatch(UpdateFilter(filter: filter == 3 ? -1 : 3));
         },
       ),
-      RaisedButton.icon(
-        shape: Border(left: BorderSide(width: 5, color: markerLabelColors[1])),
-        elevation: 1,
-        color: filter == 1 ? Colors.black38 : Colors.black12,
-        icon: Icon(Icons.filter_1, color: Colors.white),
-        label: Container(
-          width: 140,
-          child: Text(
-            'Level 1',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        onPressed: () {
-          _companyBloc.dispatch(UpdateFilter(filter: filter == 1 ? -1 : 1));
-        },
-      ),
+
+      // RaisedButton.icon(
+      //   shape: Border(left: BorderSide(width: 5, color: markerLabelColors[2])),
+      //   elevation: 1,
+      //   color: filter == 2 ? Colors.black38 : Colors.black12,
+      //   icon: Icon(Icons.filter_2, color: Colors.white),
+      //   label: Container(
+      //     width: 140,
+      //     child: Text(
+      //       'Level 2',
+      //       style: TextStyle(color: Colors.white),
+      //     ),
+      //   ),
+      //   onPressed: () {
+      //     _companyBloc.dispatch(UpdateFilter(filter: filter == 2 ? -1 : 2));
+      //   },
+      // ),
+      // RaisedButton.icon(
+      //   shape: Border(left: BorderSide(width: 5, color: markerLabelColors[1])),
+      //   elevation: 1,
+      //   color: filter == 1 ? Colors.black38 : Colors.black12,
+      //   icon: Icon(Icons.filter_1, color: Colors.white),
+      //   label: Container(
+      //     width: 140,
+      //     child: Text(
+      //       'Level 1',
+      //       style: TextStyle(color: Colors.white),
+      //     ),
+      //   ),
+      //   onPressed: () {
+      //     _companyBloc.dispatch(UpdateFilter(filter: filter == 1 ? -1 : 1));
+      //   },
+      // ),
     ];
   }
 
