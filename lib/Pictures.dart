@@ -9,7 +9,7 @@ import 'package:heave/intro/Pictures.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Pictures extends StatefulWidget {
-  Pictures(authenticated);
+  Pictures(/*authenticated*/);
 
   @override
   _PicturesState createState() => _PicturesState();

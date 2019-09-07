@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 class News extends StatefulWidget {
-  News(authenticated);
+  News(/*authenticated*/);
 
   @override
   _NewsState createState() => _NewsState();

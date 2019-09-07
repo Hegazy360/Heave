@@ -11,7 +11,7 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -24,26 +24,29 @@ dependencies:
   fancy_bottom_navigation: ^0.3.2
   cloud_firestore: ^0.12.9
   webview_flutter: ^0.3.10+4
-  flutter_map: ^0.5.6
-  flutter_map_marker_cluster: ^0.2.1
+  # flutter_map: ^0.5.6
+  # flutter_map_marker_cluster: ^0.2.1
   transparent_image: ^1.0.0
   flutter_spinkit: ^3.1.0
-  flutter_facebook_login: ^2.0.1
-  firebase_auth: ^0.11.1+12
-  rflutter_alert: ^1.0.3
-  flutter_signin_button: ^0.2.8
-  flutter_inner_drawer: ^0.3.0
-  flushbar: ^1.8.0
+  # flutter_facebook_login: ^2.0.1
+  # firebase_auth: ^0.11.1+12
+  # rflutter_alert: ^1.0.3
+  # flutter_signin_button: ^0.2.8
+  # flutter_inner_drawer: ^0.3.0
+  # flushbar: ^1.8.0
   bloc: ^0.14.4
   flutter_bloc: ^0.20.0
   equatable: ^0.3.0
   shared_preferences: ^0.5.3+4
-  floating_action_row: ^0.1.0
+  # floating_action_row: ^0.1.0
   page_transition: ^1.1.4
-  flutter_email_sender: ^2.0.3
+  # flutter_email_sender: ^2.0.3
   intro_slider: ^2.2.5
-  location: ^2.3.5
+  # location: ^2.3.5
   flare_flutter: ^1.5.5
+
+  cached_network_image: ^1.1.1
+  intl: ^0.16.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

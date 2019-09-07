@@ -7,7 +7,7 @@ import 'package:heave/intro/Animals.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Animals extends StatefulWidget {
-  Animals(authenticated);
+  Animals(/*authenticated*/);
 
   @override
   _AnimalsState createState() => _AnimalsState();
