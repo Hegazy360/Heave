@@ -12,6 +12,4 @@
 
 ![alt text](https://lh3.googleusercontent.com/m1VsqHB4Xvl5h31LgobLa5HAwLMsCi6xKp8tHUcyr8Af0mcawWoEBwGeMTKliEkJcq0=w1920-h924-rw)
 
-![alt text](https://lh3.googleusercontent.com/vcEe2J2I0HPMfBxBNE9UeI4j-iPj3Q0zi03sPJma9Mj94HBT85VL9CxevDwnoX4K5Q=w1920-h924-rw)
-
 ![alt text](https://lh3.googleusercontent.com/HH9mauqNarWgg8a-XaurmBbkBB6vrYv1dIU-8ENxM4rOWVu7BVY30QAd9FE1N8CLFXI=w1920-h924-rw)
